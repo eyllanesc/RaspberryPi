@@ -5,7 +5,7 @@ Raspberry y Python
 
 ## Instalación
 ```bash
-$ sudo apt-get -y updaye
+$ sudo apt-get -y update
 $ sudo apt-get -y install python-dev
 $ sudo apt-get -y install python-rpi.gpio
 ```
