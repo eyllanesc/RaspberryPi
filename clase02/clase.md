@@ -26,13 +26,13 @@ $ sudo apt-get -y install python-rpi.gpio
 ####Blink
 ```python
 #!/usr/bin/python
-import RPIO.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 led = 18  #GPIO18
 delay = 1 #one second
 GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
-GPIO.setup(led, GPIO.out) # input or output
+GPIO.setup(led, GPIO.OUT) # input or output
 while True:
 	GPIO.output(led, True)
     time.sleep(delay)
