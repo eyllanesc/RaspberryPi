@@ -45,12 +45,12 @@ while True:
 ####PWM
 ```python
 #!/usr/bin/python
-import RPIO.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 led = 18  #GPIO18
 GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
-GPIO.setup(led, GPIO.out) # input or output
+GPIO.setup(led, GPIO.OUT) # input or output
 pwm_led = GPIO.PWM(led, 500)
 pwm_led.start(100)
 while True:
@@ -67,7 +67,7 @@ while True:
 ![](img/pulsador.jpg)
 ```python
 #!/usr/bin/python
-import RPIO.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 led = 18  #GPIO18
 delay = 0.2 #0.2 seconds
@@ -87,7 +87,7 @@ while True:
 
 ```python
 #!/usr/bin/python
-import RPIO.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 led = 18  #GPIO18
 switch = 23
