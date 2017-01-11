@@ -158,7 +158,7 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>
 
 Despues de esto para habilitar la conexión ssh solo es necesario crear un archivo vacio  llamado ***ssh*** o ***ssh.txt***.
 
-En el caso de nuestra computadora debmos configurarlo como:
+En el caso de nuestra computadora debemos configurarlo como:
 
 ```
 $ ip address: 192.168.1.xxx
