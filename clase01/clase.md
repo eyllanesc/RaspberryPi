@@ -135,6 +135,40 @@ $ gateway: your.rpi.ip.address
 
 Y conectamos la Rpi con la PC mediante el cable ethernet, y abrimos el programa Putty y colocaremos la ip del raspberry pi, aceptamos la llave SSH y colocamos el usuario:pi y la contraseña:raspberry cuando nos pidan. Luego de esto configuramos una mejor conexión ya sea cableada o inalámbrica.
 
+Desde [https://www.raspberrypi.org/documentation/remote-access/ssh/](https://www.raspberrypi.org/documentation/remote-access/ssh/) :
+
+> As of the November 2016 release, Raspbian has the SSH server disabled by default.
+>  You will have to enable it manually. This is done using raspi-config: 
+> Enter sudo raspi-config in the terminal, first select Interfacing options, then navigate to  ssh, press
+> Enter and select Enable or disable ssh server.
+> For headless setup, SSH can be enabled by placing a file named 'ssh', without any extension, onto the boot partition of the SD card.
+
+##### RASPBIAN JESSIE LITE
+
+Segun un aviso de la actualización, se removio el acceso ssh por defecto por lo que no se podrá seguir el manual para versiones posteriores a Noviembre del 2016.
+
+En los foros nos muestra una solución para la version Lite de raspbian. Primero debemos ingresar al archivo cmdline.txt añadir lo siguiente:
+```
+ip=192.168.1.200::192.168.1.1:255.255.255.0:rpi:eth0:off
+```
+Esta estructuta tiene la forma: 
+```
+ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>
+```
+
+Despues de esto para habilitar la conexión ssh solo es necesario crear un archivo vacio  llamado ***ssh*** o ***ssh.txt***.
+
+En el caso de nuestra computadora debmos configurarlo como:
+
+```
+$ ip address: 192.168.1.xxx
+$ netmask: 255.255.255.0
+$ gateway: 192.168.1.1
+```
+
+**Nota**: La creación del archivo ***ssh*** o ***ssh.txt*** habilta el protócolo ssh en 
+***RASPBIAN JESSIE WITH PIXEL*** pero la configuración de ip estática genera que el boot no se complete.
+
 #### Cableada(IP Dinámica)
 
 No editamos nada pero necesitaremos un software que escanee la red como Advanced IP Scanner donde buscaremos la red que tenga como fabricante a Raspberry Pi Foundation.
