@@ -170,4 +170,29 @@ root.geometry("200x50+0+0")
 root.mainloop()
 ```
 
+#### DHT22
+
+## Instalación
+```bash
+$ sudo apt-get -y update
+$ sudo apt-get -y install python-pip
+$ sudo pip install adafruit_python_dht
+```
+
+```python
+import Adafruit_DHT
+import time
+
+while True:
+	humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, 4)
+	if humidity is not None and temperature is not None:
+    		print('Temp={0:0.1f}*  Humidity={1:0.1f}%'.format(temperature, humidity))
+	else:
+    		print('Failed to get reading. Try again!')
+
+	time.sleep(1)
+
+```
+
+
 [[Anterior]](../clase01/clase.md)   [[Siguente]](../clase03/clase.md)

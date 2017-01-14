@@ -202,10 +202,9 @@ $ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 y cambiamos a:
 
 ```
-network=
-{
-ssid= "Your ssid"
-psk="your wifi password"
+network={
+    ssid="Your ssid"
+    psk="your wifi password"
 }
 ```
 
