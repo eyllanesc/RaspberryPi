@@ -16,7 +16,7 @@ En la siguiente imagen se muestra un esquema simple de la aplicación, esta se c
 
 Esta arquitectura tiene como cualidad de ser simple y escalable.
 
-![](/home/qhipa/Documents/Projects/CodeHunters/RaspberryPi/clase04/imagenes/imagen1.png) 
+![](imagenes/imagen1.png) 
 
 
 ### Aplicación WEB:
@@ -61,7 +61,7 @@ Y luego lanzamos el servidor de desarrollo:
 	
 Ingresamos desde nuestra pc a un buscador y colocamos la ip del raspberry seguido del puerto 8000, en mi caso http://192.168.2.9:8000/ y deberiamos obtener algo similar a lo que muestra la siguiente imagen:
 
-![](/home/qhipa/Documents/Projects/CodeHunters/RaspberryPi/clase04/imagenes/screencapture.png) 
+![](imagenes/screencapture.png) 
 
 
 Para apagar el servidor apretamos Ctrl+C
