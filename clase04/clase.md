@@ -182,6 +182,7 @@ TEMPLATES = [
     },
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 ```
 	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
 	
@@ -353,5 +354,195 @@ urlpatterns = [
 	
 	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py makemigrations
 	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py collectstatic
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py runserver 0.0.0.0:8000
+	
+![](imagenes/screencapture2.png) 
 
 
+Ahora instalamos el servidor Apache:
+
+	(rpi-env) pi@raspberrypi:~/projects $ sudo apt-get install -y apache2 libapache2-mod-wsgi
+	
+Despues de instalamos editamos el archivo 000-default.conf ubicado en  **/etc/apache2/sites-available **, añadiendo lo siguiente antes de **< /VirtualHost >**
+
+	(rpi-env) pi@raspberrypi:~/projects $ sudo nano /etc/apache2/sites-available/000-default.conf 
+	
+
+	Alias /static /home/pi/projects/static
+	<Directory /home/pi/projects/static>
+	        Require all granted
+	</Directory>
+	<Directory /home/pi/projects/DomoProject>
+	    	<Files wsgi.py>
+	            	Require all granted
+	    	</Files>
+	</Directory>
+	
+	WSGIDaemonProcess projects python-path=/home/pi/projects python-home=/home/pi/projects/rpi-env
+	WSGIProcessGroup projects
+	WSGIScriptAlias / /home/pi/projects/DomoProject/wsgi.py
+	
+Luego le damos permisos a las carpetas y archivos.
+	
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod 664  ~/projects/db.sqlite3 
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chown :www-data ~/projects/db.sqlite3 
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chown :www-data ~/projects
+	(rpi-env) pi@raspberrypi:~/projects $ sudo service apache2 restart
+
+Ahora podremos ingresar directamente a la ip sin necesidad de indicar el puerto ni ejecutar ningun comando ya que se esta ejecutando el servidor de producción.
+
+### Servicio o Demonio
+
+Creamos un archivo llamado **myservice.py**
+
+	(rpi-env) pi@raspberrypi:~/projects $ mkdir myservice
+	(rpi-env) pi@raspberrypi:~/projects $ nano myservice/myservice.py
+
+**myservice.py**
+
+```python
+#!/usr/bin/env python
+import logging
+import logging.handlers
+import argparse
+import sys
+from datetime import datetime
+import sqlite3
+import Adafruit_DHT
+
+
+def getSensors():
+    humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, 4)
+    t = datetime.utcnow()
+    return t, temperature, humidity
+# Deafults
+LOG_FILENAME = "/tmp/myservice.log"
+LOG_LEVEL = logging.INFO  # Could be e.g. "DEBUG" or "WARNING"
+
+# Define and parse command line arguments
+parser = argparse.ArgumentParser(description="My simple Python service")
+parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
+
+# If the log file is specified on the command line then override the default
+args = parser.parse_args()
+if args.log:
+        LOG_FILENAME = args.log
+
+# Configure logging to log to a file, making a new file at midnight and keeping the last 3 day's data
+# Give the logger a unique name (good practice)
+logger = logging.getLogger(__name__)
+# Set the log level to LOG_LEVEL
+logger.setLevel(LOG_LEVEL)
+# Make a handler that writes to a file, making a new file at midnight and keeping 3 backups
+handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
+# Format each log message like this
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+# Attach the formatter to the handler
+handler.setFormatter(formatter)
+# Attach the handler to the logger
+logger.addHandler(handler)
+
+# Make a class we can use to capture stdout and sterr in the log
+class MyLogger(object):
+        def __init__(self, logger, level):
+                """Needs a logger and a logger level."""
+                self.logger = logger
+                self.level = level
+
+        def write(self, message):
+                # Only log if there is a message (not just a new line)
+                if message.rstrip() != "":
+                        self.logger.log(self.level, message.rstrip())
+
+# Replace stdout with logging to file at INFO level
+sys.stdout = MyLogger(logger, logging.INFO)
+# Replace stderr with logging to file at ERROR level
+sys.stderr = MyLogger(logger, logging.ERROR)
+
+conn = sqlite3.connect('/home/pi/projects/db.sqlite3')
+curs = conn.cursor()
+
+while True:
+    curs.execute("INSERT INTO Domo_sensor(date_created, temperature, humidity) VALUES( (?), (?), (?))", getSensors())
+    conn.commit()
+conn.close()
+```
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano myservice.sh
+	
+**myservice.sh**
+```bash
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          myservice
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Put a short description of the service here
+# Description:       Put a long description of the service here
+### END INIT INFO
+
+# Change the next 3 lines to suit where you install your script and what you want to call it
+DIR=/usr/local/bin/myservice
+DAEMON=$DIR/myservice.py
+DAEMON_NAME=myservice
+
+# Add any command line options for your daemon here
+DAEMON_OPTS=""
+
+# This next line determines what user the script runs as.
+# Root generally not recommended but necessary if you are using the Raspberry Pi GPIO from Python.
+DAEMON_USER=root
+
+# The process ID of the script when it runs is stored here:
+PIDFILE=/var/run/$DAEMON_NAME.pid
+
+. /lib/lsb/init-functions
+
+do_start () {
+    log_daemon_msg "Starting system $DAEMON_NAME daemon"
+    start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile --user $DAEMON_USER --chuid $DAEMON_USER --startas $DAEMON -- $DAEMON_OPTS
+    log_end_msg $?
+}
+do_stop () {
+    log_daemon_msg "Stopping system $DAEMON_NAME daemon"
+    start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    log_end_msg $?
+}
+
+case "$1" in
+
+    start|stop)
+        do_${1}
+        ;;
+
+    restart|reload|force-reload)
+        do_stop
+        do_start
+        ;;
+
+    status)
+        status_of_proc "$DAEMON_NAME" "$DAEMON" && exit 0 || exit $?
+        ;;
+
+    *)
+        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|restart|status}"
+        exit 1
+        ;;
+
+esac
+exit 0
+```
+
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod 755 myservice/myservice.py
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod +x myservice.sh
+	(rpi-env) pi@raspberrypi:~/projects $ sudo cp myservice.sh /etc/init.d
+	(rpi-env) pi@raspberrypi:~/projects $ sudo update-rc.d myservice.sh defaults
+	(rpi-env) pi@raspberrypi:~/projects $ sudo cp -rf myservice/ /usr/local/bin/
+	(rpi-env) pi@raspberrypi:~/projects $ sudo service myservice start
+
+Salida:
+![](imagenes/screencapture3.png) 
