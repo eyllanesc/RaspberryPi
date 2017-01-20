@@ -4,4 +4,354 @@ Servidores y Bases de Datos con Raspberry
 ## Introducción a redes y servidores
 ## Uso de sockets
 ## Instalación y configuración de un servidor web en Raspberry pi
-## Control de la Raspberry pi a travás de una página web.
+## Control de la Raspberry pi a través de una página web.
+
+El proyecto que se implementará consiste en el monitoreo de sensores y control de actuadores mediante la interfaz de una página web.
+
+En la siguiente imagen se muestra un esquema simple de la aplicación, esta se compondrá de todas principales:
+
+1. **Aplicación WEB:** Esta se encarga de mostrar los datos guardados en la base de datos.
+
+2. **Servicio o Demonio:** Este se encarga de leer los datos que proporciona los sensores y guardarlo en la base de datos.
+
+Esta arquitectura tiene como cualidad de ser simple y escalable.
+
+![](/home/qhipa/Documents/Projects/CodeHunters/RaspberryPi/clase04/imagenes/imagen1.png) 
+
+
+### Aplicación WEB:
+
+Para esta parte implementaremos un servicio restful.
+
+Usaremos como framework [django](http://www.django-rest-framework.org/) , para implementar con facilidad el servicio restful añadiremos [django rest framework](http://www.django-rest-framework.org/) .
+
+Como primer paso instalaremos un entorno virtual: **virtualenv**
+
+	pi@raspberrypi:~ $ sudo apt-get -y python-pip #primero instalamos pip, con esta herramienta instalaremos virtualenv
+	pi@raspberrypi:~ $ sudo pip install virtualenv
+	
+Teniendo instalado virtualenv, creamos un entorno de trabajo llamado **rpi-env**:
+
+	pi@raspberrypi:~ $ mkdir ~/projects
+	pi@raspberrypi:~ $ cd ~/projects
+	pi@raspberrypi:~/projects $ virtualenv rpi-env
+	
+Lo activamos con:
+
+	pi@raspberrypi:~/projects $ source rpi-env/bin/activate
+	
+Teniendo todo lo anterior instalamos django y django-rest-framework:
+
+	(rpi-env) pi@raspberrypi:~/projects $ pip install django
+	(rpi-env) pi@raspberrypi:~/projects $ pip install djangorestframework
+	
+Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
+
+	(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject DomoProject .
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py startapp Domo
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+	
+Vamos a hacer una pequeña prueba para ello editamos el archivo settings.py y añadimos  la ip del raspberry(en mi caso '192.168.2.9')  en la linea ALLOWED_HOSTS = []
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/settings.py
+	ALLOWED_HOSTS = ['192.168.2.9']
+Y luego lanzamos el servidor de desarrollo:
+
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py runserver 0.0.0.0:8000
+	
+Ingresamos desde nuestra pc a un buscador y colocamos la ip del raspberry seguido del puerto 8000, en mi caso http://192.168.2.9:8000/ y deberiamos obtener algo similar a lo que muestra la siguiente imagen:
+
+![](/home/qhipa/Documents/Projects/CodeHunters/RaspberryPi/clase04/imagenes/screencapture.png) 
+
+
+Para apagar el servidor apretamos Ctrl+C
+
+Lo primero que haremos es crear un modelo de la base de datos, para ello usaremos la ORM de django, editamos el archivo models.py que se encuentra dentro de la carpeta Domo. Hacemos los mismo con serializers.py
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/models.py 
+
+
+**models.py**
+
+```python
+from __future__ import unicode_literals
+
+from django.db import models
+
+
+class Sensor(models.Model):
+    date_created = models.DateTimeField(auto_now=True)
+    temperature = models.FloatField()
+    humidity = models.FloatField()
+```
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/serializers.py
+	
+**serializers.py**
+```python
+from rest_framework import serializers
+
+from Domo.models import Sensor
+
+
+class SensorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sensor
+        fields = ('date_created', 'temperature', 'humidity')
+```
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/urls.py
+
+**urls.py**
+```python
+from rest_framework import routers
+
+from Domo.views import SensorViewSet
+
+router = routers.DefaultRouter()
+router.register(r'sensors', SensorViewSet)
+
+urlpatterns = router.urls
+```
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/views.py
+
+**views.py**
+```python
+from django.shortcuts import render
+from rest_framework import viewsets
+
+from Domo.models import Sensor
+from Domo.serializers import SensorSerializer
+
+
+class SensorViewSet(viewsets.ModelViewSet):
+    queryset = Sensor.objects.all().order_by('-id')[:40]
+    serializer_class = SensorSerializer
+
+
+def home(request):
+    return render(request, 'index.html'
+```
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/admin.py
+
+**admin.py**
+``` python
+from django.contrib import admin
+
+from Domo.models import Sensor
+
+
+@admin.register(Sensor)
+class SensorAdmin(admin.ModelAdmin):
+    list_display = ('date_created', 'temperature', 'humidity')
+```
+
+Luego añadimos la aplicación Domo al proyecto:
+
+	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/settings.py
+	
+``` python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'Domo', # añadimos esta parte
+]
+
+....
+
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # modificamos esta parte
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+```
+	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
+	
+**urls.py**
+
+```python
+"""DomoProject URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.10/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.conf.urls import url, include
+    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+"""
+from django.conf.urls import url, include
+from django.contrib import admin
+
+from Domo.views import home
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/', include('Domo.urls', namespace='core')),
+    url(r'^$', home),
+]
+```
+	(rpi-env) pi@raspberrypi:~/projects $ mkdir templates
+	(rpi-env) pi@raspberrypi:~/projects $ nano templates/index.html
+
+**index.html**
+
+```html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto</title>
+</head>
+
+<body>
+<div id="header">
+    <h2 style="text-align: center">Proyecto</h2>
+</div>
+<div id="content">
+    <div class="demo-container">
+        <div id="placeholder" style="margin:0 auto;"></div>
+        <br>
+        <div style="width:1000px;margin:0 auto;">
+            Actualizar: <input type="checkbox" id="myCheck" checked>
+            <br>
+            Time : <input type="number" id="interval" value="1000">
+            <br>
+            <label id="lblLast"></label>
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var temperature = {
+            x: [],
+            y: [],
+            fill: 'tonexty',
+            type: 'scatter',
+            name: 'Temperatura'
+        };
+
+
+        var humidity = {
+            x: [],
+            y: [],
+            fill: 'tonexty',
+            type: 'scatter',
+            name: 'Humedad',
+            yaxis: 'y2'
+        };
+
+        var layout = {
+            title: 'Sensores',
+            showlegend: true,
+            legend: {
+                x: 0,
+                y: 1,
+                traceorder: 'normal',
+                font: {
+                    family: 'sans-serif',
+                    size: 12,
+                    color: '#000'
+                },
+                bgcolor: '#E2E2E2',
+            },
+            yaxis: {
+                title: '°C',
+                range: [0, 100]
+            },
+            yaxis2: {
+                title: '%',
+                side: 'right',
+                overlaying: 'y',
+                range: [0, 100]
+            }
+        };
+
+        var data = [humidity, temperature];
+
+        var updateInterval = 1000;
+        // Load all posts on page load
+        function GetData() {
+            $.ajax({
+                url: "/api/sensors/", // the endpoint
+                type: "GET", // http method
+                // handle a successful response
+                success: function (data) {
+                    temperature['x'] = [];
+                    temperature['y'] = [];
+
+                    humidity['x'] = [];
+                    humidity['y'] = [];
+
+                    $.each(data, function (index, value) {
+                        temperature['x'].push(new Date(value['date_created']));
+                        temperature['y'].push(value['temperature']);
+
+                        humidity['x'].push(new Date(value['date_created']));
+                        humidity['y'].push(value['humidity']);
+                    });
+                },
+                // handle a non-successful response
+                error: function (xhr, errmsg, err) {
+
+                }
+            });
+
+        };
+
+        function update() {
+            GetData();
+
+            if (document.getElementById("myCheck").checked) {
+                Plotly.newPlot('placeholder', data, layout);
+                document.getElementById('lblLast').innerHTML = "Temperatura Actual: " +
+                    temperature['y'][0] + "<br>Humedad Actual: " + humidity['y'][0];
+            }
+            var interval = Number(document.getElementById("interval").value);
+            if (!isNaN(interval)) {
+                updateInterval = interval;
+            }
+            setTimeout(update, updateInterval);
+        }
+
+        update();
+
+    })
+    ;
+</script>
+</html>
+
+```
+	
+	
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py makemigrations
+	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+
+
