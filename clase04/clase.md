@@ -546,3 +546,23 @@ exit 0
 
 Salida:
 ![](imagenes/screencapture3.png) 
+
+### Resumen
+
+Para los alumnos del curso es necesario ejecutar los siguientes comandos:
+
+	sudo apt-get -y update
+	sudo apt-get -y upgrade
+	sudo apt-get -y python-pip
+	sudo pip install adafruit_python_dht
+	sudo pip install virtualenv
+	mkdir ~/projects
+	cd ~/projects
+	virtualenv rpi-env
+	source rpi-env/bin/activate
+	pip install django
+	pip install djangorestframework
+	sudo apt-get install -y apache2 libapache2-mod-wsgi
+	sudo apt-get -y install python-dev
+	sudo apt-get -y install python-rpi.gpio
+	
