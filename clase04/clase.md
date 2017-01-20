@@ -566,3 +566,7 @@ Para los alumnos del curso es necesario ejecutar los siguientes comandos:
 	sudo apt-get -y install python-dev
 	sudo apt-get -y install python-rpi.gpio
 	
+####Fuente
+
+- https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-apache-and-mod_wsgi-on-ubuntu-14-04
+- http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/
