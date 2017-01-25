@@ -130,7 +130,7 @@ class SensorViewSet(viewsets.ModelViewSet):
 
 
 def home(request):
-    return render(request, 'index.html'
+    return render(request, 'index.html')
 ```
 
 	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/admin.py
