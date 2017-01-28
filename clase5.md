@@ -46,6 +46,7 @@ urls.py
 index.html
 
 	
+	
 	 function myFunction(state) {
 	
 	    $.ajax({
@@ -68,8 +69,12 @@ index.html
 	            });
 	    }
 	    
+	    function forward(){
+	    	myFunction("fordward");
+	    }
+	    
 En el mismo index.html:
 
 	<div style="text-align:center;margin:auto;">
-	    <button onclick="myFunction("forward")">Avanzar</button>
+	    <button onclick="forward()">Avanzar</button>
 	</div>
