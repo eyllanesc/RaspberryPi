@@ -68,3 +68,9 @@ index.html
 	                }
 	            });
 	    }
+	    
+En el mismo index.html:
+
+	<div style="text-align:center;margin:auto;">
+	    <button onclick="myFunction()">Toggle</button>
+	</div>
