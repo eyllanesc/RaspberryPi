@@ -45,9 +45,8 @@ urls.py
 	
 index.html
 
-	var state = "stop";
 	
-	 function myFunction() {
+	 function myFunction(state) {
 	
 	    $.ajax({
 	                url: "/api/motors/", // the endpoint
@@ -72,5 +71,5 @@ index.html
 En el mismo index.html:
 
 	<div style="text-align:center;margin:auto;">
-	    <button onclick="myFunction()">Toggle</button>
+	    <button onclick="myFunction("forward")">Avanzar</button>
 	</div>
