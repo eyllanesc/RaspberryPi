@@ -40,3 +40,31 @@ urls.py
 	
 	router.register(r'sensors', SensorViewSet)
 	router.register(r'motors', MotorViewSet)
+	
+	
+	
+index.html
+
+	var state = "stop";
+	
+	 function myFunction() {
+	
+	    $.ajax({
+	                url: "/api/motors/", // the endpoint
+	                type: "POST", // http method
+	                // handle a successful response
+	                success: function (data) {
+	                    state = !state;
+	                    console.log(data);
+	                    console.log(state);
+	                },
+	                data: {
+	                    'date_created': new Date(),
+	                    'state': state
+	                },
+	                // handle a non-successful response
+	                error: function (xhr, errmsg, err) {
+	
+	                }
+	            });
+	    }
