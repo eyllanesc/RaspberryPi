@@ -108,7 +108,7 @@ $ scp your_archivo pi@your.rpi.ip.address:"/home/pi"
 
 ### Instalacion de SO
 
-1. SO Raspbian, descargarlo de la página oficial de Raspberry Pi desde [aquí](https://www.raspberrypi.org/downloads/)
+1. SO Raspbian, descargarlo de la página oficial de Raspberry Pi desde [aquí](https://www.raspberrypi.org/downloads/raspbian/)
 2. una memoría microSD de al menos 4Gb (recomiendo que sea de clase 10)
 3. software para grabar el SO en la memoria microSD, en este caso optaremos por Win32DiskImager
 
