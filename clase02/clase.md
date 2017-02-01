@@ -13,7 +13,7 @@ $ sudo apt-get -y install python-rpi.gpio
 
 ## Datasheet
 
-<div style="text-align:center"><img src ="img/rpio-gpio.png" width="300" /></div>
+<img src ="img/rpio-gpio.png" width="300"style="text-align:center" />
 
 ## Uso de GPIO con Python
 
