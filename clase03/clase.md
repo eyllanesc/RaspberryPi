@@ -181,7 +181,8 @@ class SensorAdmin(admin.ModelAdmin):
 Luego añadimos la aplicación Domo al proyecto:
 
 	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/settings.py
-	
+
+**DomoProject/settings.py**	
 ``` python
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -221,7 +222,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 ```
 	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
 	
-**urls.py**
+**DomoProject/urls.py**
 
 ```python
 """DomoProject URL Configuration
@@ -253,7 +254,7 @@ urlpatterns = [
 	(rpi-env) pi@raspberrypi:~/projects $ mkdir templates
 	(rpi-env) pi@raspberrypi:~/projects $ nano templates/index.html
 
-**index.html**
+**templates/index.html**
 
 ```html
 
