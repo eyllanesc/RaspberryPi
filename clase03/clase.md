@@ -25,12 +25,12 @@ Para esta parte implementaremos un servicio restful.
 
 Usaremos como framework [django](http://www.django-rest-framework.org/) , para implementar con facilidad el servicio restful añadiremos [django rest framework](http://www.django-rest-framework.org/) .
 
-Como primer paso instalaremos un entorno virtual: **virtualenv**
+Como primer paso instalaremos un entorno virtual llamado **virtualenv**
 
 	pi@raspberrypi:~ $ sudo apt-get install -y python-pip
 	pi@raspberrypi:~ $ sudo pip install virtualenv
 	
-Teniendo instalado virtualenv, creamos un entorno de trabajo llamado **rpi-env**:
+Teniendo instalado virtualenv, creamos un entorno de trabajo que llamaremos **rpi-env**:
 
 	pi@raspberrypi:~ $ mkdir ~/projects
 	pi@raspberrypi:~ $ cd ~/projects
