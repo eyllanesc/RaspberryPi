@@ -6,6 +6,7 @@ Manejo de los GPIO's
 ## Instalación
 ```bash
 $ sudo apt-get -y update
+$ sudo apt-get -y upgrade
 $ sudo apt-get -y install python-dev
 $ sudo apt-get -y install python-rpi.gpio
 ```
