@@ -1,4 +1,4 @@
-Raspberry y Python
+Manejo de los GPIO's
 ==================
 
 ![](img/imagen.png)
