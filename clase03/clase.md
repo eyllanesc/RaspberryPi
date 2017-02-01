@@ -215,6 +215,8 @@ TEMPLATES = [
     },
 ]
 
+...
+
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 ```
 	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
