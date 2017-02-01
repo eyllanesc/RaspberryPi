@@ -101,7 +101,7 @@ Lo primero que haremos es crear un modelo de la base de datos, para ello usaremo
 	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/models.py 
 
 
-**models.py**
+**Domo/models.py**
 
 ```python
 from __future__ import unicode_literals
@@ -117,7 +117,7 @@ class Sensor(models.Model):
 
 	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/serializers.py
 	
-**serializers.py**
+**Domo/serializers.py**
 ```python
 from rest_framework import serializers
 
@@ -129,23 +129,10 @@ class SensorSerializer(serializers.ModelSerializer):
         model = Sensor
         fields = ('date_created', 'temperature', 'humidity')
 ```
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/urls.py
-
-**urls.py**
-```python
-from rest_framework import routers
-
-from Domo.views import SensorViewSet
-
-router = routers.DefaultRouter()
-router.register(r'sensors', SensorViewSet)
-
-urlpatterns = router.urls
-```
 
 	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/views.py
 
-**views.py**
+**Domo/views.py**
 ```python
 from django.shortcuts import render
 from rest_framework import viewsets
@@ -163,9 +150,23 @@ def home(request):
     return render(request, 'index.html')
 ```
 
+	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/urls.py
+
+**Domo/urls.py**
+```python
+from rest_framework import routers
+
+from Domo.views import SensorViewSet
+
+router = routers.DefaultRouter()
+router.register(r'sensors', SensorViewSet)
+
+urlpatterns = router.urls
+```
+
 	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/admin.py
 
-**admin.py**
+**Domo/admin.py**
 ``` python
 from django.contrib import admin
 
