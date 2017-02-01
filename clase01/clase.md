@@ -70,7 +70,7 @@ Introducción al Raspberry Pi
 |Precio	|25 dólares|20 dólares|35 dólares|35 dólares|35 dólares|5 dólares| 35 dólares|
 
 
-##	Relación con otros ordenadores
+## Relación con otros ordenadores
 
 ## Herramientas
 
@@ -108,7 +108,7 @@ $ scp your_archivo pi@your.rpi.ip.address:"/home/pi"
 
 ### Instalacion de SO
 
-1. SO Raspbian, descargarlo de la página oficial de Raspberry Pi desde [aquí](http://212.187.212.146/bt/dffe8144ecd9af3961fdf142e39794e038f1cfc5/data/2015-09-24-raspbian-jessie.zip)
+1. SO Raspbian, descargarlo de la página oficial de Raspberry Pi desde [aquí](https://www.raspberrypi.org/downloads/)
 2. una memoría microSD de al menos 4Gb (recomiendo que sea de clase 10)
 3. software para grabar el SO en la memoria microSD, en este caso optaremos por Win32DiskImager
 
