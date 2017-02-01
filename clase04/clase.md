@@ -1,3 +1,15 @@
+```bash
+pi@raspberrypi:~ $ sudo apt-get install -y motion
+```
+Editamos el archivo motion.conf, buscando los siguientes campos y los cambiamos a lo siguientes valores:
+
+```bash
+pi@raspberrypi:~ $ sudo nano /etc/motion/motion.conf
+```
+	stream_localhost off
+	webcontrol_localhost off
+	framerate 60
+	
 models.py
 
 	class Motor(models.Model):

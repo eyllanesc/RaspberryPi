@@ -27,7 +27,7 @@ Usaremos como framework [django](http://www.django-rest-framework.org/) , para i
 
 Como primer paso instalaremos un entorno virtual: **virtualenv**
 
-	pi@raspberrypi:~ $ sudo apt-get -y python-pip #primero instalamos pip, con esta herramienta instalaremos virtualenv
+	pi@raspberrypi:~ $ sudo apt-get install -y python-pip
 	pi@raspberrypi:~ $ sudo pip install virtualenv
 	
 Teniendo instalado virtualenv, creamos un entorno de trabajo llamado **rpi-env**:
