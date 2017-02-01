@@ -121,16 +121,16 @@ Formaremos una red local entre el Rpi y la PC para poder acceder a esta sin nece
 Despues de grabar la memoría microSD con Raspbian, lo insertamos en la pc y vamos a editar el archivo cmdline.txt:
 
 ```
- $ nano boot/cmdline.txt
+ pi@raspberrypi:~ $ nano boot/cmdline.txt
  dwc_otg.lpm_enable=0 console=ttyAMA0,115200 <...> rootwait ip=your.rpi.ip.address
 ```
 
 Luego insertamos la memoria en el raspberry pi, y alimentamos la raspberry pi, en paralelo cambiamos la configuración de ethernet en nuestra PC con la siguiente configuración:
 
 ```
-$ ip address: your.rpi.ip.another_address
-$ netmask: 255.255.255.0
-$ gateway: your.rpi.ip.address
+ip address: your.rpi.ip.another_address
+netmask: 255.255.255.0
+gateway: your.rpi.ip.address
 ```
 
 Y conectamos la Rpi con la PC mediante el cable ethernet, y abrimos el programa Putty y colocaremos la ip del raspberry pi, aceptamos la llave SSH y colocamos el usuario:pi y la contraseña:raspberry cuando nos pidan. Luego de esto configuramos una mejor conexión ya sea cableada o inalámbrica.
@@ -156,7 +156,7 @@ Esta estructuta tiene la forma:
 ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>
 ```
 
-Despues de esto para habilitar la conexión ssh solo es necesario crear un archivo vacio  llamado ***ssh*** o ***ssh.txt***.
+Despues de esto para habilitar la conexión ssh solo es necesario crear un archivo vacio  llamado ***ssh***.
 
 En el caso de nuestra computadora debemos configurarlo como:
 
@@ -178,7 +178,7 @@ No editamos nada pero necesitaremos un software que escanee la red como Advanced
 Editamos el archivo interfaces:
 
 ```
-$ sudo nano /etc/networks/interfaces
+pi@raspberrypi:~ $ sudo nano /etc/networks/interfaces
 ```
 
 y cambiamos a:
@@ -197,7 +197,7 @@ y cambiamos a:
  Editamos el archivo wpa_supplicant.conf:&nbsp:
 
 ```
-$ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+pi@raspberrypi:~ $ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 ```
 y cambiamos a:
 
@@ -212,7 +212,7 @@ En ambos casos reiniciar la Rpi y conectarse ahora por el nuevo IP a través del
 
 Si la Raspberry Pi tiene acceso a internet comprobamos si esta bien configurado con el siguiente comando:
 ```
-$ ping -c 3 8.8.8.8
+pi@raspberrypi:~ $ ping -c 3 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=45 time=173 ms
 64 bytes from 8.8.8.8: icmp_seq=2 ttl=45 time=180 ms
@@ -225,7 +225,7 @@ rtt min/avg/max/mdev = 172.677/175.469/180.461/3.554 ms
 Y sino tendremos que configurar el DNS, para ello editamos el archivo /etc/resolv.conf
 
 ```
-$ sudo nano /etc/resolv.conf
+pi@raspberrypi:~ $ sudo nano /etc/resolv.conf
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 ```
@@ -473,7 +473,7 @@ Subdirectorio pensado para albergar datos de aplicaciones en cache (usados en un
 El sistema de paquetes de Debian (apt-get), mantiene y almacena todos los paquetes que nos hemos instalado con el gestor de paquetes Apt-get. Por ejemplo, si ejecutamos:
 
 ```
-pi@raspberry:# apt-get install nmap
+pi@raspberry:# sudo apt-get install nmap
 ```
 
 Debian se bajará de algún repositorio especificado en /etc/apt/sources.list el archivo nmap_version.deb, lo almacenará en /var/cache/apt y lo instalará desde esta ruta.
@@ -504,7 +504,7 @@ Linux enviará aquí los archivos de correos de cada usuario del sistema.
 
 /var/run contiene archivos con información del sistema que lo describen desde que se arrancó. Generalmente, se borrará todos los archivos que cuelgan de este subdirectorio al comenzar el proceso de arranque.
 
-Estos archivos con información del sistema son los llamados archivos identificados de procesos ó PID, que guardan el identificador del proceso (Process ID).
+Estos archivos con información del sistema son los llamados archivos identificados de procesos ó PID, que guardan el identificador del proceso (Process ID).
 
 Podemos ver aquí los archivos PID en un instante determinado en mi máquina:
 
@@ -582,7 +582,7 @@ Para windows descargar desde [aquí](https://www.realvnc.com/download/binary/179
 
 Para linux instalar:
 ```console
-$ sudo apt-get -y install 
+pi@raspberrypi:~ $ sudo apt-get -y install 
 ```
 
 ingresar con **your.rpi.ip.address:1**
@@ -605,8 +605,8 @@ import urllib2,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa
 ### Instalar rmate
 
 ```bash
-$ sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate
-$ sudo chmod +x /usr/local/bin/rsub
+pi@raspberrypi:~ $ sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate
+pi@raspberrypi:~ $ sudo chmod +x /usr/local/bin/rsub
 ```
 
 ### Configurar Putty
@@ -618,7 +618,16 @@ $ sudo chmod +x /usr/local/bin/rsub
 ### USO
 
 ```bash
-$ rsub your_file
+pi@raspberrypi:~ $ rsub your_file
 ```
+
+### Resumen
+
+	pi@raspberrypi:~ $ sudo apt-get update
+	pi@raspberrypi:~ $ sudo apt-get upgrade
+	pi@raspberrypi:~ $ sudo apt-get install -y tree
+	pi@raspberrypi:~ $ sudo apt-get install -y mlocate
+	pi@raspberrypi:~ $ sudo updatedb
+	
 
 [[Anterior]](../README.md)   [[Siguente]](../clase02/clase.md)

@@ -198,7 +198,7 @@ while True:
 
 	sudo apt-get install -y update
 	sudo apt-get install -y upgrade
-	sudo apt-get install -y install python-dev
+	sudo apt-get install -y python-dev
 	sudo apt-get install -y python-rpi.gpio
 	sudo apt-get install -y python-pip
 	sudo pip install adafruit_python_dht
