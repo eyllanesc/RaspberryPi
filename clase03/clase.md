@@ -583,7 +583,48 @@ exit 0
 Salida:
 ![](imagenes/screencapture3.png) 
 
-### Resumen
+##Clientes
+
+### Python
+
+#### GET method:
+
+```python
+import requests
+import datetime
+
+url = 'http://192.168.2.9/api/sensors/'
+
+response = requests.get(url)
+assert response.status_code == 200
+
+for data in response.json():
+    date = datetime.datetime.strptime(data['date_created'][:-1], "%Y-%m-%dT%H:%M:%S.%f")
+    humidity = data['humidity']
+    temperature = data['temperature']
+    print("Fecha: {}, Humedad: {}, Temperatura: {}".format(date, humidity, temperature))
+    
+```
+
+#### POST method:
+
+```python
+import requests
+import datetime
+import json
+import time
+
+ for i in range(100):
+	date = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+	headers = {'Content-type': 'application/json'}
+	response = requests.post(url,  data =json.dumps({'date_created': date,'temperature': 11.1, 'humidity': 10.1}), headers=headers)
+	assert response.status_code == 201
+	time.sleep(0.1)
+	
+```
+
+## Resumen
 
 Para los alumnos del curso es necesario ejecutar los siguientes comandos:
 
