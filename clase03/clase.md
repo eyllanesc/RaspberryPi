@@ -194,7 +194,7 @@ INSTALLED_APPS = [
     
     'rest_framework',
 
-    'Domo', # añadimos esta parte
+    'Domo',
 ]
 
 ....
@@ -422,8 +422,8 @@ Despues de instalamos editamos el archivo 000-default.conf ubicado en  **/etc/ap
 Luego le damos permisos a las carpetas y archivos.
 	
 	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod 664  ~/projects/db.sqlite3 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chown :www-data ~/projects/db.sqlite3 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chown :www-data ~/projects
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chown www-data ~/projects/db.sqlite3 
+	(rpi-env) pi@raspberrypi:~/projects $ sudo chown www-data ~/projects
 	(rpi-env) pi@raspberrypi:~/projects $ sudo service apache2 restart
 
 Ahora podremos ingresar directamente a la ip sin necesidad de indicar el puerto ni ejecutar ningun comando ya que se esta ejecutando el servidor de producción.
