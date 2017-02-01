@@ -614,6 +614,8 @@ import datetime
 import json
 import time
 
+url = 'http://192.168.2.9/api/sensors/'
+
  for i in range(100):
 	date = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
