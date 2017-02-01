@@ -1,4 +1,4 @@
-Linux y Raspberry
+Introducción al Raspberry Pi
 ===========================
 
 ![](img/anio.jpg)
