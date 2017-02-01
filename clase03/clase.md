@@ -50,6 +50,36 @@ Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
 	(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject DomoProject .
 	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py startapp Domo
 	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+
+Para verificar que vamos por buen camino ejecutamos el siguiente comando para visualizar la estructura de carpetas generadas:
+
+	(rpi-env) pi@raspberrypi:~/projects $ tree | head -22
+	
+Debiendo obtener lo siguiente:
+
+	.
+	├── db.sqlite3
+	├── Domo
+	│   ├── admin.py
+	│   ├── apps.py
+	│   ├── __init__.py
+	│   ├── migrations
+	│   │   └── __init__.py
+	│   ├── models.py
+	│   ├── tests.py
+	│   └── views.py
+	├── DomoProject
+	│   ├── __init__.py
+	│   ├── __init__.pyc
+	│   ├── settings.py
+	│   ├── settings.pyc
+	│   ├── urls.py
+	│   ├── urls.pyc
+	│   └── wsgi.py
+	├── manage.py
+	└── rpi-env
+	    ├── bin
+
 	
 Vamos a hacer una pequeña prueba para ello editamos el archivo settings.py y añadimos  la ip del raspberry(en mi caso '192.168.2.9')  en la linea ALLOWED_HOSTS = []
 
