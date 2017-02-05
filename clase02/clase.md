@@ -196,8 +196,8 @@ while True:
 
 ### Resumen
 
-	sudo apt-get install -y update
-	sudo apt-get install -y upgrade
+	sudo apt-get -y update
+	sudo apt-get -y upgrade
 	sudo apt-get install -y python-dev
 	sudo apt-get install -y python-rpi.gpio
 	sudo apt-get install -y python-pip
