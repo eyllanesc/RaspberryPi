@@ -1,5 +1,13 @@
 ### Configuración de motion
 
+Creamos un directorio para guardar las imagenes:
+
+```bash
+pi@raspberrypi:~ $ mkdir  /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chgrp motion /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chmod g+rwx /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chmod -R g+w /home/pi/Monitor/
+```
 Instalamos la librería **motion**.
 
 ```bash
@@ -13,6 +21,8 @@ pi@raspberrypi:~ $ sudo nano /etc/motion/motion.conf
 	stream_localhost off
 	webcontrol_localhost off
 	framerate 60
+	target_dir /home/pi/Monitor
+	
 	
 Editamos el archivo **/etc/default/motion** y cambiamos de **no** a **yes**
 
@@ -31,6 +41,17 @@ Y Accedemos a la imagen de la cámara a traves de la url desde nuestro buscador:
 Obteniendo lo siguiente:
 
 ![](imagenes/Screenshot.png) 
+
+
+Las imagenes y videos pueden llenar el almacenamiento, por ello configuramos que pasada los 15 minutos despues de cada hora borre todos excepto las 20 ultimas imagenes:
+
+```bash
+pi@raspberrypi:~ $ sudo crontab -e
+```
+
+
+	15 * * * * (date; ls /home/pi/Monitor/*.jpg | head -n -20 | xargs rm -v) >> /tmp/images_deleted 2>&1
+
 
 ### Configurando el Servidor
 
