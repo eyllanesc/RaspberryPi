@@ -1,3 +1,7 @@
+### Configuración de motion
+
+Instalamos la librería **motion**.
+
 ```bash
 pi@raspberrypi:~ $ sudo apt-get install -y motion
 ```
@@ -10,6 +14,26 @@ pi@raspberrypi:~ $ sudo nano /etc/motion/motion.conf
 	webcontrol_localhost off
 	framerate 60
 	
+Editamos el archivo **/etc/default/motion** y cambiamos de **no** a **yes**
+
+```bash
+pi@raspberrypi:~ $ sudo nano /etc/default/motion
+```
+	start_motion_daemon=yes
+
+Despues ejecutamos lo siguiente:
+
+	pi@raspberrypi:~ $ sudo service motion stop
+	pi@raspberrypi:~ $ sudo service motion start
+	
+Y Accedemos a la imagen de la cámara a traves de la url desde nuestro buscador: http://{your-rpi-address}:8081/ 
+
+Obteniendo lo siguiente:
+
+![](imagenes/Screenshot.png) 
+
+### Configurando el Servidor
+
 models.py
 
 	class Motor(models.Model):
