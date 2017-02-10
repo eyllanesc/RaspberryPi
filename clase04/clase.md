@@ -55,81 +55,113 @@ pi@raspberrypi:~ $ sudo crontab -e
 
 ### Configurando el Servidor
 
-models.py
+Domo/models.py
 
-	class Motor(models.Model):
-		date_created = models.DateTimeField(auto_now=True)
-		status = models.CharField(max_length=40)
-	
-serializers.py:
+```python
+from __future__ import unicode_literals
 
+from django.db import models
 
-	from Domo.models import Sensor, Motor
-	
-	class MotorSerializer(serializers.ModelSerializer):
-	    class Meta:
-	        model = Motor
-	        fields = ('date_created', 'status')
-	
-views.py:
+STATUS_CHOICES = (
+    ('F', 'Forward'),
+    ('B', 'Backward'),
+    ('L', 'Left'),
+    ('R', 'Right'),
+    ('S', 'Stop')
+)
 
+# Create your models here.
 
-	from Domo.models import Sensor, Motor
-	from Domo.serializers import SensorSerializer, MotorSerializer
-	
-	class MotorViewSet(viewsets.ModelViewSet):
-	    queryset = Motor.objects.all()
-	    serializer_class = MotorSerializer
-	
-admin.py
+class Motor(models.Model):
+    date_created = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='S')
 
-	from Domo.models import Sensor, Motor
+```
+Domo/serializers.py:
+
+```python	
+
+from rest_framework import serializers
+
+from Domo.models import Motor
+
+class MotorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Motor
+        fields = ('date_created', 'status')
+
+```	
+
+Domo/views.py:
+
+```python
+from django.shortcuts import render
+from rest_framework import viewsets
+
+# Create your views here.
+from Domo.models import Motor
+from Domo.serializers import MotorSerializer
+
+class MotorViewSet(viewsets.ModelViewSet):
+    queryset = Motor.objects.all()
+    serializer_class = MotorSerializer
+```
 	
-	
-	@admin.register(motor)
-	class MotorAdmin(admin.ModelAdmin):
-	    list_display = ('date_created', 'status')
+Domo/admin.py
+
+```python
+from django.contrib import admin
+from Domo.models import Motor
+
+# Register your models here.
+@admin.register(Motor)
+class MotorAdmin(admin.ModelAdmin):
+    list_display = ('date_created', 'status')
+```
 	
 
-urls.py 
+Domo/urls.py 
 
-	from Domo.views import SensorViewSet, MotorViewSet
+```python
+from rest_framework import routers
+from Domo.views import MotorViewSet
+
+router = routers.DefaultRouter()
+router.register(r'motors', MotorViewSet)
+
+urlpatterns = router.urls
+```
 	
-	router.register(r'sensors', SensorViewSet)
-	router.register(r'motors', MotorViewSet)
-	
-	
-	
-index.html
+templates/index.html
 
 	
+```javascriptl
+function myFunction(state) {	
+   	$.ajax({
+        	url: "/api/motors/", // the endpoint
+	         type: "POST", // http method
+	        // handle a successful response
+	        success: function (data) {
+	        	state = !state;
+	                console.log(data);
+	                console.log(state);
+	        },
+	        data: {
+	        	'date_created': new Date(),
+	                'state': state
+	        },
+	        // handle a non-successful response
+	        error: function (xhr, errmsg, err) {
 	
-	 function myFunction(state) {
-	
-	    $.ajax({
-	                url: "/api/motors/", // the endpoint
-	                type: "POST", // http method
-	                // handle a successful response
-	                success: function (data) {
-	                    state = !state;
-	                    console.log(data);
-	                    console.log(state);
-	                },
-	                data: {
-	                    'date_created': new Date(),
-	                    'state': state
-	                },
-	                // handle a non-successful response
-	                error: function (xhr, errmsg, err) {
-	
-	                }
-	            });
-	    }
+	        }
+	       });
+}
 	    
-	    function forward(){
-	    	myFunction("fordward");
-	    }
-	    
+function forward(){
+    	myFunction("fordward");
+}
+```
+
 En el mismo index.html:
 
 	<div style="text-align:center;margin:auto;">
