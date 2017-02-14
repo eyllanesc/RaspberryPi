@@ -145,6 +145,77 @@ package="com.rpi.bluecarpi.bluecarpi">
 ...
 ```
 
+### activity_main.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.rpi.bluecarpi.bluecarpi.MainActivity">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|right|top|center|bottom"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="@string/forward"
+                android:id="@+id/btnForward"
+                android:layout_column="11" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="@string/left"
+                android:id="@+id/btnLeft"
+                android:layout_column="10" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stop"
+                android:id="@+id/btnStop"
+                android:layout_column="11" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rigth"
+                android:id="@+id/btnRight"
+                android:layout_column="12" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_column="12">
+
+            <Button
+                android:text="@string/backward"
+                android:id="@+id/btnBackward"
+                android:layout_column="11" />
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>
+```
+
 ### MainActivity.java
 
 ```java
