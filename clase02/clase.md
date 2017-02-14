@@ -73,7 +73,7 @@ led = 18  #GPIO18
 delay = 0.2 #0.2 seconds
 GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
-GPIO.setup(led, GPIO.IN, pull_down=GPIO.PUD_UP) # input or output
+GPIO.setup(led, GPIO.IN, pull_up_down=GPIO.PUD_UP) # input or output
 while True:
     input_state = GPIO.input(led)
     if input_state == False:
