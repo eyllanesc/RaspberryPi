@@ -2,7 +2,7 @@
 
 Creamos un directorio para guardar las imagenes:
 
-```bash
+```console
 pi@raspberrypi:~ $ mkdir  /home/pi/Monitor
 pi@raspberrypi:~ $ sudo chgrp motion /home/pi/Monitor
 pi@raspberrypi:~ $ sudo chmod g+rwx /home/pi/Monitor
@@ -10,31 +10,34 @@ pi@raspberrypi:~ $ sudo chmod -R g+w /home/pi/Monitor/
 ```
 Instalamos la librería **motion**.
 
-```bash
+```console
 pi@raspberrypi:~ $ sudo apt-get install -y motion
 ```
 Editamos el archivo motion.conf, buscando los siguientes campos y los cambiamos a lo siguientes valores:
 
-```bash
+```console
 pi@raspberrypi:~ $ sudo nano /etc/motion/motion.conf
 ```
+
 	stream_localhost off
 	webcontrol_localhost off
 	framerate 60
 	target_dir /home/pi/Monitor
-	
+
 	
 Editamos el archivo **/etc/default/motion** y cambiamos de **no** a **yes**
 
-```bash
+```console
 pi@raspberrypi:~ $ sudo nano /etc/default/motion
 ```
 	start_motion_daemon=yes
 
 Despues ejecutamos lo siguiente:
 
-	pi@raspberrypi:~ $ sudo service motion stop
-	pi@raspberrypi:~ $ sudo service motion start
+```console
+pi@raspberrypi:~ $ sudo service motion stop
+pi@raspberrypi:~ $ sudo service motion start
+```
 	
 Y Accedemos a la imagen de la cámara a traves de la url desde nuestro buscador: http://{your-rpi-address}:8081/ 
 
@@ -45,7 +48,7 @@ Obteniendo lo siguiente:
 
 Las imagenes y videos pueden llenar el almacenamiento, por ello configuramos que pasada los 15 minutos despues de cada hora borre todos excepto las 20 ultimas imagenes:
 
-```bash
+```console
 pi@raspberrypi:~ $ sudo crontab -e
 ```
 
@@ -55,7 +58,10 @@ pi@raspberrypi:~ $ sudo crontab -e
 
 ### Configurando el Servidor
 
-Domo/models.py
+
+Implementamos el servidor para que provea y guarde los datos, para ellos creamos el modelo Motor que contiene 2 atributos: *date_created* que guarda la fecha de creación del comando y *status* que contiene el comando respectivo. Además de los serializers y vistas respectivas.
+
+##### Domo/models.py
 
 ```python
 from __future__ import unicode_literals
@@ -77,7 +83,7 @@ class Motor(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='S')
 
 ```
-Domo/serializers.py:
+##### Domo/serializers.py:
 
 ```python	
 
@@ -92,7 +98,7 @@ class MotorSerializer(serializers.ModelSerializer):
 
 ```	
 
-Domo/views.py:
+##### Domo/views.py:
 
 ```python
 from django.shortcuts import render
@@ -107,7 +113,7 @@ class MotorViewSet(viewsets.ModelViewSet):
     serializer_class = MotorSerializer
 ```
 	
-Domo/admin.py
+##### Domo/admin.py
 
 ```python
 from django.contrib import admin
@@ -120,7 +126,7 @@ class MotorAdmin(admin.ModelAdmin):
 ```
 	
 
-Domo/urls.py 
+##### Domo/urls.py 
 
 ```python
 from rest_framework import routers
@@ -131,8 +137,10 @@ router.register(r'motors', MotorViewSet)
 
 urlpatterns = router.urls
 ```
+
+Creamos el archivo index.html donde implementamos las peticiones mediante javascript utilizando ajax.
 	
-templates/index.html
+##### templates/index.html
 
 	
 ```html
@@ -223,7 +231,9 @@ Obteniendo algo similar a la siguiente imagen:
 
 ![](imagenes/Proyecto.png) 
 
-#### Car.py
+Luego implementamos la clase **Car**  que se encarga de manejar los movimientos del vehículo.
+
+##### Car.py
 
 ```python
 import RPi.GPIO as GPIO
@@ -291,7 +301,11 @@ class Car:
     def __exit__(self, exc_type, exc_val, exc_tb):
         GPIO.cleanup()
 ```
-#### main.py
+
+
+Ahora creamos la clase **Data** que se encarga de obtener los datos, filtrar el último y verificar si este ha sido creado en menos de 1 segundo. Si cumple lo anterior obtenemos el comando  **status** y realizamos la tarea respectiva.
+
+##### main.py
 
 ```python
 from datetime import datetime, timedelta
