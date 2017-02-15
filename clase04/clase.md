@@ -136,34 +136,85 @@ templates/index.html
 
 	
 ```javascriptl
-function myFunction(state) {	
-   	$.ajax({
-        	url: "/api/motors/", // the endpoint
-	         type: "POST", // http method
-	        // handle a successful response
-	        success: function (data) {
-	        	state = !state;
-	                console.log(data);
-	                console.log(state);
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto</title>
+</head>
+
+<body>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="forward()">Avanzar</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="backward()">Retroceder</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="left()">Izquierda</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="right()">Derecha</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="stop()">Parar</button>
+</div>
+
+<img id="ip_link" src="" target="_blank" />
+
+</body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var ip = location.host;
+    document.getElementById("ip_link").src = "http://"+ip+":8081";
+
+    // Load all posts on page load
+    function move(state) {
+        $.ajax({
+            url: "/api/motors/", // the endpoint
+            type: "POST", // http method
+            // handle a successful response
+            success: function (data) {
+
 	        },
-	        data: {
-	        	'date_created': new Date(),
-	                'state': state
-	        },
-	        // handle a non-successful response
-	        error: function (xhr, errmsg, err) {
-	
-	        }
-	       });
-}
-	    
-function forward(){
-    	myFunction("fordward");
-}
+            data: {
+               	'date_created': new Date(),
+                'status': state
+            },
+            // handle a non-successful response
+            error: function (xhr, errmsg, err) {
+
+                }
+            });
+
+        };
+
+    function forward(){
+    	move('F');
+    };
+
+    function backward(){
+    	move('B');
+    };
+
+    function left(){
+    	move('L');
+    };
+
+    function right(){
+    	move('R');
+    };
+
+    function stop(){
+    	move('S');
+    };
+
+</script>
+</html>
 ```
-
-En el mismo index.html:
-
-	<div style="text-align:center;margin:auto;">
-	    <button onclick="forward()">Avanzar</button>
-	</div>
