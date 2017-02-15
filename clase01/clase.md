@@ -9,7 +9,7 @@ Introducción al Raspberry Pi
 2. Nació para estimular la enseñanza de ciencias de la computación en las escuelas del Reino Unido( plataforma educativa).
 3. Actualmente es una plataforma de desarrollo.
 
-![](img/proyectos.png)
+![](img/proyectos.jpg)
 
 ####Recursos
 
