@@ -135,7 +135,7 @@ urlpatterns = router.urls
 templates/index.html
 
 	
-```javascriptl
+```html
 <!DOCTYPE html>
 <html>
 <head>
