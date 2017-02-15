@@ -1,10 +1,7 @@
 Servidores y Bases de Datos con Raspberry
 ==========================================
 
-## Introducción a redes y servidores
-## Uso de sockets
-## Instalación y configuración de un servidor web en Raspberry pi
-## Control de la Raspberry pi a través de una página web.
+# Control de la Raspberry pi a través de una página web.
 
 El proyecto que se implementará consiste en el monitoreo de sensores y control de actuadores mediante la interfaz de una página web.
 
@@ -27,19 +24,23 @@ Usaremos como framework [django](http://www.django-rest-framework.org/) , para i
 
 Como primer paso instalaremos un entorno virtual llamado **virtualenv**
 
-	pi@raspberrypi:~ $ sudo apt-get install -y python-pip
-	pi@raspberrypi:~ $ sudo pip install virtualenv
-	
+```console
+pi@raspberrypi:~ $ sudo apt-get install -y python-pip
+pi@raspberrypi:~ $ sudo pip install virtualenv
+```
+
 Teniendo instalado virtualenv, creamos un entorno de trabajo que llamaremos **rpi-env**:
 
-	pi@raspberrypi:~ $ mkdir ~/projects
-	pi@raspberrypi:~ $ cd ~/projects
-	pi@raspberrypi:~/projects $ virtualenv rpi-env
-	
+```console
+pi@raspberrypi:~ $ mkdir ~/projects
+pi@raspberrypi:~ $ cd ~/projects
+pi@raspberrypi:~/projects $ virtualenv rpi-env
+```
 Lo activamos con:
 
-	pi@raspberrypi:~/projects $ source rpi-env/bin/activate
-	
+```console
+pi@raspberrypi:~/projects $ source rpi-env/bin/activate
+```	
 Teniendo todo lo anterior instalamos django y django-rest-framework:
 
 	(rpi-env) pi@raspberrypi:~/projects $ pip install django
@@ -47,13 +48,17 @@ Teniendo todo lo anterior instalamos django y django-rest-framework:
 	
 Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
 
-	(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject DomoProject .
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py startapp Domo
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+```console
+(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject DomoProject .
+(rpi-env) pi@raspberrypi:~/projects $ ./manage.py startapp Domo
+(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+```
 
 Para verificar que vamos por buen camino ejecutamos el siguiente comando para visualizar la estructura de carpetas generadas:
 
-	(rpi-env) pi@raspberrypi:~/projects $ tree | head -22
+```console
+(rpi-env) pi@raspberrypi:~/projects $ tree | head -22
+```
 	
 Debiendo obtener lo siguiente:
 
