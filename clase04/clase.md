@@ -218,3 +218,119 @@ templates/index.html
 </script>
 </html>
 ```
+#### Car.py
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+
+class Car:
+    def __init__(self, motorL, motorR):
+        """
+        Manejar los motores
+        :param pins:
+        [in1, in2, in3, in4]
+        """
+        GPIO.setmode(GPIO.BCM)
+        self._pinsA = motorL
+        self._pinsB = motorR
+
+        for pin in (self._pinsA + self._pinsB):
+            GPIO.setup(pin, GPIO.OUT)
+
+    def motorOn(self, pins):
+        GPIO.output(pins[0], False)
+        GPIO.output(pins[1], True)
+
+    def motorOff(self, pins):
+        GPIO.output(pins[0], False)
+        GPIO.output(pins[1], False)
+
+    def motorReverse(self, pins):
+        GPIO.output(pins[0], True)
+        GPIO.output(pins[1], False)
+
+    def forward(self):
+        self.stop()
+        self.motorOn(self._pinsA)
+        self.motorOn(self._pinsB)
+        time.sleep(0.2)
+        self.stop()
+
+    def backward(self):
+        self.stop()
+        self.motorReverse(self._pinsA)
+        self.motorReverse(self._pinsB)
+        time.sleep(0.2)
+        self.stop()
+
+    def left(self):
+        self.stop()
+        self.motorOn(self._pinsB)
+        self.motorReverse(self._pinsA)
+        time.sleep(0.2)
+        self.stop()
+
+    def right(self):
+        self.stop()
+        self.motorOn(self._pinsA)
+        self.motorReverse(self._pinsB)
+        time.sleep(0.2)
+        self.stop()
+
+    def stop(self):
+        self.motorOff(self._pinsA)
+        self.motorOff(self._pinsB)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        GPIO.cleanup()
+```
+#### main.py
+
+```python
+from datetime import datetime, timedelta
+from Car import Car
+import requests
+
+
+class Data:
+    def __init__(self, url, timeout=1):
+        self.url = url
+        self.before = None
+        self.timeout = timeout
+
+    def load(self):
+        response = requests.get(self.url)
+        assert response.status_code == 200
+        data = response.json()[-1]
+        date = datetime.strptime(data['date_created'][:-1], "%Y-%m-%dT%H:%M:%S.%f")
+        if self.before == date:
+            return
+        self.before = date
+        u = datetime.utcnow()
+        diff = u - date
+        if diff < timedelta(seconds=self.timeout):
+            return data['status']
+
+if __name__ == '__main__':
+    data = Data(url='http://192.168.2.10/api/motors/')
+    motorL = [17, 27]
+    motorR = [23, 24]
+
+    car = Car(motorL, motorR)
+
+    while True:
+        resp = data.load()
+        print(resp)
+        if resp == 'F':
+            car.forward()
+        elif resp == 'B':
+            car.backward()
+        elif resp == 'L':
+            car.left()
+        elif resp == 'R':
+            car.right()
+        elif resp == 'S':
+            car.stop()
+```
