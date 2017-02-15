@@ -203,4 +203,3 @@ while True:
 	sudo apt-get install -y python-pip
 	sudo pip install adafruit_python_dht
 
-[[Anterior]](../clase01/clase.md)   [[Siguente]](../clase03/clase.md)

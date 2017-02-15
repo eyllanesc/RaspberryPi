@@ -629,5 +629,3 @@ pi@raspberrypi:~ $ rsub your_file
 	pi@raspberrypi:~ $ sudo apt-get install -y mlocate
 	pi@raspberrypi:~ $ sudo updatedb
 	
-
-[[Anterior]](../README.md)   [[Siguente]](../clase02/clase.md)
