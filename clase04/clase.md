@@ -218,6 +218,11 @@ templates/index.html
 </script>
 </html>
 ```
+
+Obteniendo algo similar a la siguiente imagen:
+
+![](imagenes/Proyecto.png) 
+
 #### Car.py
 
 ```python
