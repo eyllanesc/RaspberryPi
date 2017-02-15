@@ -341,7 +341,6 @@ if __name__ == '__main__':
 
     while True:
         resp = data.load()
-        print(resp)
         if resp == 'F':
             car.forward()
         elif resp == 'B':
