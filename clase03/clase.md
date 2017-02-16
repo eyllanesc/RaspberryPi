@@ -635,8 +635,8 @@ url = 'http://192.168.2.9/api/sensors/'
 
 Para los alumnos del curso es necesario ejecutar los siguientes comandos:
 
-	sudo apt-get install -y update
-	sudo apt-get install -y upgrade
+	sudo apt-get -y update
+	sudo apt-get -y upgrade
 	sudo apt-get install -y install python-dev
 	sudo apt-get install -y python-rpi.gpio
 	sudo apt-get install -y python-pip
