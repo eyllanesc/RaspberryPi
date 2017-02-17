@@ -633,6 +633,8 @@ url = 'http://192.168.2.9/api/sensors/'
 
 ### ESP8266
 
+Para realizar esta parte es necesario tener instalado las herramientas necesarias para compilar y quemar el *ESP8266*
+
 #### esp8266-restclient [link](https://github.com/csquared/arduino-restclient) 
 
 ```console
