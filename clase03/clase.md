@@ -570,18 +570,17 @@ pi@raspberrypi:~ $ sudo nano /etc/apache2/sites-available/000-default.conf
 ```	
         [...]
 	Alias /static /home/pi/projects/static
-	<Directory /home/pi/projects/static>
-	        Require all granted
-	</Directory>
-	<Directory /home/pi/projects/DomoProject>
-	    	<Files wsgi.py>
-	            	Require all granted
-	    	</Files>
-	</Directory>
-	
-	WSGIDaemonProcess projects python-path=/home/pi/projects python-home=/home/pi/projects/rpi-env
-	WSGIProcessGroup projects
-	WSGIScriptAlias / /home/pi/projects/DomoProject/wsgi.py
+        <Directory /home/pi/projects/static>
+                Require all granted
+        </Directory>
+        <Directory /home/pi/projects/Raspberry/Raspberry>
+                <Files wsgi.py>
+                        Require all granted
+                </Files>
+        </Directory>
+        WSGIDaemonProcess projects python-path=/home/pi/projects/Raspberry python-home=/home/pi/projects/rpi-env
+        WSGIProcessGroup projects
+        WSGIScriptAlias / /home/pi/projects/Raspberry/Raspberry/wsgi.py
 	< /VirtualHost >
 	[...]
 Luego le damos permisos a las carpetas y archivos.
