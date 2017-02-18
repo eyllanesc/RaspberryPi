@@ -289,9 +289,12 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, "static").replace('\\', '/'),
 )
 ```
-	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
-	
-**DomoProject/urls.py**
+
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Raspberry/urls.py
+```
+
+**Raspberry/urls.py**
 
 ```python
 """DomoProject URL Configuration
