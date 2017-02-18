@@ -43,8 +43,10 @@ pi@raspberrypi:~/projects $ source rpi-env/bin/activate
 ```	
 Teniendo todo lo anterior instalamos django y django-rest-framework:
 
-	(rpi-env) pi@raspberrypi:~/projects $ pip install django
-	(rpi-env) pi@raspberrypi:~/projects $ pip install djangorestframework
+```console
+(rpi-env) pi@raspberrypi:~/projects $ pip install django
+(rpi-env) pi@raspberrypi:~/projects $ pip install djangorestframework
+```
 	
 Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
 
@@ -94,8 +96,16 @@ Debiendo obtener lo siguiente:
 	
 Vamos a hacer una pequeña prueba para ello editamos el archivo settings.py y añadimos  la ip del raspberry(en mi caso '192.168.2.9')  en la linea ALLOWED_HOSTS = []
 
-	(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Raspberry/settings.py
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Raspberry/settings.py
+```
+
+```bash
+ [...]
 	ALLOWED_HOSTS = ['192.168.2.9']
+[...]
+```
+
 Y luego lanzamos el servidor de desarrollo:
 
 	(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
