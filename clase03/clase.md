@@ -404,6 +404,8 @@ urlpatterns = [
 ```console
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static/vendor
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ wget -O static/vendor/jquery.min.js https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ wget -O static/vendor/plotly-latest.min.js https://cdn.plot.ly/plotly-latest.min.js
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static/js
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano static/js/sensors.js
 ```
