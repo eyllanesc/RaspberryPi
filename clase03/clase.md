@@ -48,7 +48,7 @@ Teniendo todo lo anterior instalamos django y django-rest-framework:
 (rpi-env) pi@raspberrypi:~/projects $ pip install djangorestframework
 ```
 	
-Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
+Creamos un proyecto llamado **Raspberry** y una aplicación llamada **Domo**:
 
 ```console
 (rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject Raspberry
@@ -308,7 +308,7 @@ STATICFILES_DIRS = (
 **Raspberry/urls.py**
 
 ```python
-"""DomoProject URL Configuration
+"""Raspberry URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
