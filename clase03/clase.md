@@ -190,7 +190,7 @@ def home(request):
 ```
 
 ```console
-(rpi-env) pi@raspberrypi:~/projects/Raspberrt $ nano Domo/urls.py
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Domo/urls.py
 ```
 
 **Domo/urls.py**
