@@ -101,14 +101,15 @@ Vamos a hacer una peque√±a prueba para ello editamos el archivo settings.py y a√
 ```
 
 ```bash
- [...]
+[...]
 	ALLOWED_HOSTS = ['192.168.2.9']
 [...]
 ```
 
 Y luego lanzamos el servidor de desarrollo:
-
-	(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
+```
 	
 Ingresamos desde nuestra pc a un buscador y colocamos la ip del raspberry seguido del puerto 8000, en mi caso http://192.168.2.9:8000/ y deberiamos obtener algo similar a lo que muestra la siguiente imagen:
 
