@@ -582,7 +582,7 @@ pi@raspberrypi:~ $ sudo nano /etc/apache2/sites-available/000-default.conf
         WSGIDaemonProcess projects python-path=/home/pi/projects/Raspberry python-home=/home/pi/projects/rpi-env
         WSGIProcessGroup projects
         WSGIScriptAlias / /home/pi/projects/Raspberry/Raspberry/wsgi.py
-< /VirtualHost >
+        < /VirtualHost >
 [...]
 ```
 
