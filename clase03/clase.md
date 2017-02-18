@@ -568,8 +568,9 @@ Despues de instalamos editamos el archivo 000-default.conf ubicado en  **/etc/ap
 ```console
 pi@raspberrypi:~ $ sudo nano /etc/apache2/sites-available/000-default.conf 
 ```	
-        [...]
-	Alias /static /home/pi/projects/static
+```bash
+[...]
+         Alias /static /home/pi/projects/static
         <Directory /home/pi/projects/static>
                 Require all granted
         </Directory>
@@ -581,8 +582,10 @@ pi@raspberrypi:~ $ sudo nano /etc/apache2/sites-available/000-default.conf
         WSGIDaemonProcess projects python-path=/home/pi/projects/Raspberry python-home=/home/pi/projects/rpi-env
         WSGIProcessGroup projects
         WSGIScriptAlias / /home/pi/projects/Raspberry/Raspberry/wsgi.py
-	< /VirtualHost >
-	[...]
+< /VirtualHost >
+[...]
+```
+
 Luego le damos permisos a las carpetas y archivos.
 
 ```console	
