@@ -49,50 +49,56 @@ Teniendo todo lo anterior instalamos django y django-rest-framework:
 Creamos un proyecto llamado **DomoProject** y una aplicación llamada **Domo**:
 
 ```console
-(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject DomoProject .
-(rpi-env) pi@raspberrypi:~/projects $ ./manage.py startapp Domo
-(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
+(rpi-env) pi@raspberrypi:~/projects $ django-admin.py startproject Raspberry
+(rpi-env) pi@raspberrypi:~/projects $ cd Raspberry
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py startapp Domo
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py migrate
 ```
 
 Para verificar que vamos por buen camino ejecutamos el siguiente comando para visualizar la estructura de carpetas generadas:
 
 ```console
-(rpi-env) pi@raspberrypi:~/projects $ tree | head -22
+(rpi-env)  pi@raspberrypi:~/projects/Raspberry $ tree 
 ```
 	
 Debiendo obtener lo siguiente:
 
-	.
+		.
 	├── db.sqlite3
 	├── Domo
 	│   ├── admin.py
 	│   ├── apps.py
 	│   ├── __init__.py
-	│   ├── migrations
-	│   │   └── __init__.py
 	│   ├── models.py
+	│   ├── serializers.py
 	│   ├── tests.py
-	│   └── views.py
-	├── DomoProject
-	│   ├── __init__.py
-	│   ├── __init__.pyc
-	│   ├── settings.py
-	│   ├── settings.pyc
 	│   ├── urls.py
-	│   ├── urls.pyc
-	│   └── wsgi.py
+	│   ├── views.py
 	├── manage.py
-	└── rpi-env
-	    ├── bin
+	├── Raspberry
+	│   ├── __init__.py
+	│   ├── settings.py
+	│   ├── urls.py
+	│   └── wsgi.py
+	├── README.md
+	├── static
+	│   ├── js
+	│   │   ├── motors.js
+	│   │   └── sensors.js
+	│   └── vendor
+	│       ├── jquery.min.js
+	│       └── plotly-latest.min.js
+	└── templates
+	    └── index.html
 
 	
 Vamos a hacer una pequeña prueba para ello editamos el archivo settings.py y añadimos  la ip del raspberry(en mi caso '192.168.2.9')  en la linea ALLOWED_HOSTS = []
 
-	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/settings.py
+	(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Raspberry/settings.py
 	ALLOWED_HOSTS = ['192.168.2.9']
 Y luego lanzamos el servidor de desarrollo:
 
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py runserver 0.0.0.0:8000
+	(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
 	
 Ingresamos desde nuestra pc a un buscador y colocamos la ip del raspberry seguido del puerto 8000, en mi caso http://192.168.2.9:8000/ y deberiamos obtener algo similar a lo que muestra la siguiente imagen:
 
@@ -103,8 +109,9 @@ Para apagar el servidor apretamos Ctrl+C
 
 Lo primero que haremos es crear un modelo de la base de datos, para ello usaremos la ORM de django, editamos el archivo models.py que se encuentra dentro de la carpeta Domo. Hacemos los mismo con serializers.py
 
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/models.py 
-
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Domo/models.py 
+```
 
 **Domo/models.py**
 
@@ -118,32 +125,54 @@ class Sensor(models.Model):
     date_created = models.DateTimeField(auto_now=True)
     temperature = models.FloatField()
     humidity = models.FloatField()
+
+STATUS_CHOICES = (
+    ('F', 'Forward'),
+    ('B', 'Backward'),
+    ('L', 'Left'),
+    ('R', 'Right'),
+    ('S', 'Stop')
+)
+
+
+class Motor(models.Model):
+    date_created = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='S')
 ```
 
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/serializers.py
-	
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Domo/serializers.py
+```
+
 **Domo/serializers.py**
+
 ```python
 from rest_framework import serializers
 
-from Domo.models import Sensor
+from Domo.models import Sensor, Motor
 
 
 class SensorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sensor
         fields = ('date_created', 'temperature', 'humidity')
+
+
+class MotorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Motor
+        fields = ('date_created', 'status')
 ```
-
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/views.py
-
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Domo/views.py
+```
 **Domo/views.py**
 ```python
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from Domo.models import Sensor
-from Domo.serializers import SensorSerializer
+from Domo.models import Sensor, Motor
+from Domo.serializers import SensorSerializer, MotorSerializer
 
 
 class SensorViewSet(viewsets.ModelViewSet):
@@ -151,44 +180,67 @@ class SensorViewSet(viewsets.ModelViewSet):
     serializer_class = SensorSerializer
 
 
+class MotorViewSet(viewsets.ModelViewSet):
+    queryset = Motor.objects.all()
+    serializer_class = MotorSerializer
+
+
 def home(request):
     return render(request, 'index.html')
 ```
 
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/urls.py
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberrt $ nano Domo/urls.py
+```
 
 **Domo/urls.py**
 ```python
 from rest_framework import routers
 
-from Domo.views import SensorViewSet
+from Domo.views import SensorViewSet, MotorViewSet
 
 router = routers.DefaultRouter()
 router.register(r'sensors', SensorViewSet)
+router.register(r'motors', MotorViewSet)
 
 urlpatterns = router.urls
 ```
-
-	(rpi-env) pi@raspberrypi:~/projects $ nano Domo/admin.py
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Domo/admin.py
+```
 
 **Domo/admin.py**
 ``` python
 from django.contrib import admin
 
-from Domo.models import Sensor
+from Domo.models import Sensor, Motor
 
 
 @admin.register(Sensor)
 class SensorAdmin(admin.ModelAdmin):
     list_display = ('date_created', 'temperature', 'humidity')
+
+
+@admin.register(Motor)
+class MotorAdmin(admin.ModelAdmin):
+    list_display = ('date_created', 'status')
 ```
 
 Luego añadimos la aplicación Domo al proyecto:
 
-	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/settings.py
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano Raspberry/settings.py
+```
 
-**DomoProject/settings.py**	
+**Raspberry/settings.py**	
 ``` python
+[...]
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.split(os.path.dirname(__file__))[0]
+
+[...]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -197,12 +249,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Aplicaciones de terceros
     'rest_framework',
-
+    # Aplicaciones creadas
     'Domo',
+    
 ]
 
-....
+[...]
 
 
 TEMPLATES = [
@@ -221,9 +275,19 @@ TEMPLATES = [
     },
 ]
 
-...
+[...]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
+
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    # os.path.join(PROJECT_DIR, "static").replace('\\', '/'),
+    os.path.join(PROJECT_DIR, "static").replace('\\', '/'),
+)
 ```
 	(rpi-env) pi@raspberrypi:~/projects $ nano DomoProject/urls.py
 	
@@ -256,13 +320,15 @@ urlpatterns = [
     url(r'^$', home),
 ]
 ```
-	(rpi-env) pi@raspberrypi:~/projects $ mkdir templates
-	(rpi-env) pi@raspberrypi:~/projects $ nano templates/index.html
 
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir templates
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano templates/index.html
+```
 **templates/index.html**
 
 ```html
-
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -274,6 +340,32 @@ urlpatterns = [
 <div id="header">
     <h2 style="text-align: center">Proyecto</h2>
 </div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="forward()">Avanzar</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="backward()">Retroceder</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="left()">Izquierda</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="right()">Derecha</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="stop()">Parar</button>
+</div>
+
+<p style="text-align:center;">
+    <img id="ip_link" src="" target="_blank" />
+</p>
+
+
 <div id="content">
     <div class="demo-container">
         <div id="placeholder" style="margin:0 auto;"></div>
@@ -288,128 +380,192 @@ urlpatterns = [
     </div>
 </div>
 </body>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var temperature = {
-            x: [],
-            y: [],
-            fill: 'tonexty',
-            type: 'scatter',
-            name: 'Temperatura'
-        };
-
-
-        var humidity = {
-            x: [],
-            y: [],
-            fill: 'tonexty',
-            type: 'scatter',
-            name: 'Humedad',
-            yaxis: 'y2'
-        };
-
-        var layout = {
-            title: 'Sensores',
-            showlegend: true,
-            legend: {
-                x: 0,
-                y: 1,
-                traceorder: 'normal',
-                font: {
-                    family: 'sans-serif',
-                    size: 12,
-                    color: '#000'
-                },
-                bgcolor: '#E2E2E2',
-            },
-            yaxis: {
-                title: '°C',
-                range: [0, 100]
-            },
-            yaxis2: {
-                title: '%',
-                side: 'right',
-                overlaying: 'y',
-                range: [0, 100]
-            }
-        };
-
-        var data = [humidity, temperature];
-
-        var updateInterval = 1000;
-        // Load all posts on page load
-        function GetData() {
-            $.ajax({
-                url: "/api/sensors/", // the endpoint
-                type: "GET", // http method
-                // handle a successful response
-                success: function (data) {
-                    temperature['x'] = [];
-                    temperature['y'] = [];
-
-                    humidity['x'] = [];
-                    humidity['y'] = [];
-
-                    $.each(data, function (index, value) {
-                        temperature['x'].push(new Date(value['date_created']));
-                        temperature['y'].push(value['temperature']);
-
-                        humidity['x'].push(new Date(value['date_created']));
-                        humidity['y'].push(value['humidity']);
-                    });
-                },
-                // handle a non-successful response
-                error: function (xhr, errmsg, err) {
-
-                }
-            });
-
-        };
-
-        function update() {
-            GetData();
-
-            if (document.getElementById("myCheck").checked) {
-                Plotly.newPlot('placeholder', data, layout);
-                document.getElementById('lblLast').innerHTML = "Temperatura Actual: " +
-                    temperature['y'][0] + "<br>Humedad Actual: " + humidity['y'][0];
-            }
-            var interval = Number(document.getElementById("interval").value);
-            if (!isNaN(interval)) {
-                updateInterval = interval;
-            }
-            setTimeout(update, updateInterval);
-        }
-
-        update();
-
-    })
-    ;
-</script>
+<script type="text/javascript" src="{% static 'vendor/jquery.min.js' %}"></script>
+<script type="text/javascript" src=" {% static 'vendor/plotly-latest.min.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/sensors.js' %}"> </script>
+<script type="text/javascript" src=" {% static 'js/motors.js' %}"> </script>
 </html>
-
 ```
+
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static/vendor
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ mkdir static/js
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano static/js/sensors.js
+```
+**static/js/sensors.js**
+```javascript
+$(document).ready(function () {
+    var temperature = {
+        x: [],
+        y: [],
+        fill: 'tonexty',
+        type: 'scatter',
+        name: 'Temperatura'
+    };
+
+
+    var humidity = {
+        x: [],
+        y: [],
+        fill: 'tonexty',
+        type: 'scatter',
+        name: 'Humedad',
+        yaxis: 'y2'
+    };
+
+    var layout = {
+        title: 'Sensores',
+        showlegend: true,
+        legend: {
+            x: 0,
+            y: 1,
+            traceorder: 'normal',
+            font: {
+                family: 'sans-serif',
+                size: 12,
+                color: '#000'
+            },
+            bgcolor: '#E2E2E2',
+        },
+        yaxis: {
+            title: '°C',
+            range: [0, 100]
+        },
+        yaxis2: {
+            title: '%',
+            side: 'right',
+            overlaying: 'y',
+            range: [0, 100]
+        }
+    };
+
+    var data = [humidity, temperature];
+
+    var updateInterval = 1000;
+    // Load all posts on page load
+    function GetData() {
+        $.ajax({
+            url: "/api/sensors/", // the endpoint
+            type: "GET", // http method
+            // handle a successful response
+            success: function (data) {
+                temperature['x'] = [];
+                temperature['y'] = [];
+
+                humidity['x'] = [];
+                humidity['y'] = [];
+
+                $.each(data, function (index, value) {
+                    temperature['x'].push(new Date(value['date_created']));
+                    temperature['y'].push(value['temperature']);
+
+                    humidity['x'].push(new Date(value['date_created']));
+                    humidity['y'].push(value['humidity']);
+                });
+            },
+            // handle a non-successful response
+            error: function (xhr, errmsg, err) {
+
+            }
+        });
+
+    };
+
+    function update() {
+        GetData();
+
+        if (document.getElementById("myCheck").checked) {
+            Plotly.newPlot('placeholder', data, layout);
+            document.getElementById('lblLast').innerHTML = "Temperatura Actual: " +
+                temperature['y'][0] + "<br>Humedad Actual: " + humidity['y'][0];
+        }
+        var interval = Number(document.getElementById("interval").value);
+        if (!isNaN(interval)) {
+            updateInterval = interval;
+        }
+        setTimeout(update, updateInterval);
+    }
+
+    update();
+});
+```
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ nano static/js/motors.js
+```
+**static/js/motors.js**
+```javascript
+var ip = location.host;
+document.getElementById("ip_link").src = "http://" + ip + ":8081";
+
+// Load all posts on page load
+function move(state) {
+    $.ajax({
+        url: "/api/motors/", // the endpoint
+        type: "POST", // http method
+        // handle a successful response
+        success: function (data) {
+
+        },
+        data: {
+            'status': state
+        },
+        // handle a non-successful response
+        error: function (xhr, errmsg, err) {
+
+        }
+    });
+
+};
+
+function forward() {
+    move('F');
+};
+
+function backward() {
+    move('B');
+};
+
+function left() {
+    move('L');
+};
+
+function right() {
+    move('R');
+};
+
+function stop() {
+    move('S');
+};
+```
+
 	
-	
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py makemigrations
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py migrate
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py collectstatic
-	(rpi-env) pi@raspberrypi:~/projects $ ./manage.py runserver 0.0.0.0:8000
-	
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py makemigrations
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py migrate
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py collectstatic
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
+```
+
 ![](imagenes/screencapture2.png) 
 
+```console
+(rpi-env) pi@raspberrypi:~/projects/Raspberry $ cd
+(rpi-env) pi@raspberrypi:~ $ deactivate
+```
 
 Ahora instalamos el servidor Apache:
 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo apt-get install -y apache2 libapache2-mod-wsgi
+```console
+pi@raspberrypi:~ $ sudo apt-get install -y apache2 libapache2-mod-wsgi
+```
 	
 Despues de instalamos editamos el archivo 000-default.conf ubicado en  **/etc/apache2/sites-available **, añadiendo lo siguiente antes de **< /VirtualHost >**
 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo nano /etc/apache2/sites-available/000-default.conf 
-	
-
+```console
+pi@raspberrypi:~ $ sudo nano /etc/apache2/sites-available/000-default.conf 
+```	
+        [...]
 	Alias /static /home/pi/projects/static
 	<Directory /home/pi/projects/static>
 	        Require all granted
@@ -423,13 +579,16 @@ Despues de instalamos editamos el archivo 000-default.conf ubicado en  **/etc/ap
 	WSGIDaemonProcess projects python-path=/home/pi/projects python-home=/home/pi/projects/rpi-env
 	WSGIProcessGroup projects
 	WSGIScriptAlias / /home/pi/projects/DomoProject/wsgi.py
-	
+	< /VirtualHost >
+	[...]
 Luego le damos permisos a las carpetas y archivos.
-	
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod 664  ~/projects/db.sqlite3 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chown www-data ~/projects/db.sqlite3 
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chown www-data ~/projects
-	(rpi-env) pi@raspberrypi:~/projects $ sudo service apache2 restart
+
+```console	
+pi@raspberrypi:~ $ sudo chmod 664  ~/projects/Raspberry/db.sqlite3 
+pi@raspberrypi:~ $ sudo chown www-data ~/projects/Raspberry/db.sqlite3 
+pi@raspberrypi:~ $ sudo chown www-data ~/projects/Raspberry
+pi@raspberrypi:~ $ sudo service apache2 restart
+```
 
 Ahora podremos ingresar directamente a la ip sin necesidad de indicar el puerto ni ejecutar ningun comando ya que se esta ejecutando el servidor de producción.
 
@@ -437,9 +596,10 @@ Ahora podremos ingresar directamente a la ip sin necesidad de indicar el puerto 
 
 Creamos un archivo llamado **myservice.py**
 
-	(rpi-env) pi@raspberrypi:~/projects $ mkdir myservice
-	(rpi-env) pi@raspberrypi:~/projects $ nano myservice/myservice.py
-
+```console
+pi@raspberrypi:~ $ mkdir myservice
+pi@raspberrypi:~ $ nano myservice/myservice.py
+```
 **myservice.py**
 
 ```python
@@ -501,7 +661,7 @@ sys.stdout = MyLogger(logger, logging.INFO)
 # Replace stderr with logging to file at ERROR level
 sys.stderr = MyLogger(logger, logging.ERROR)
 
-conn = sqlite3.connect('/home/pi/projects/db.sqlite3')
+conn = sqlite3.connect('/home/pi/projects/Raspberry/db.sqlite3')
 curs = conn.cursor()
 
 while True:
@@ -509,9 +669,9 @@ while True:
     conn.commit()
 conn.close()
 ```
-
-	(rpi-env) pi@raspberrypi:~/projects $ nano myservice.sh
-	
+```console
+pi@raspberrypi:~ $ nano myservice.sh
+```
 **myservice.sh**
 ```bash
 #!/bin/sh
@@ -577,14 +737,14 @@ case "$1" in
 esac
 exit 0
 ```
-
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod 755 myservice/myservice.py
-	(rpi-env) pi@raspberrypi:~/projects $ sudo chmod +x myservice.sh
-	(rpi-env) pi@raspberrypi:~/projects $ sudo cp myservice.sh /etc/init.d
-	(rpi-env) pi@raspberrypi:~/projects $ sudo update-rc.d myservice.sh defaults
-	(rpi-env) pi@raspberrypi:~/projects $ sudo cp -rf myservice/ /usr/local/bin/
-	(rpi-env) pi@raspberrypi:~/projects $ sudo service myservice start
-
+```console
+pi@raspberrypi:~ $ sudo chmod 755 myservice/myservice.py
+pi@raspberrypi:~ $ sudo chmod +x myservice.sh
+pi@raspberrypi:~ $ sudo cp myservice.sh /etc/init.d
+pi@raspberrypi:~ $ sudo update-rc.d myservice.sh defaults
+pi@raspberrypi:~ $ sudo cp -rf myservice/ /usr/local/bin/
+pi@raspberrypi:~ $ sudo service myservice start
+```
 Salida:
 ![](imagenes/screencapture3.png) 
 
