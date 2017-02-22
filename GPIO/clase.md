@@ -11,11 +11,11 @@ Manejo de los GPIO's
 ## Python
 
 ### Instalación
-```bash
-$ sudo apt-get -y update
-$ sudo apt-get -y upgrade
-$ sudo apt-get -y install python-dev
-$ sudo apt-get -y install python-rpi.gpio
+```console
+pi@raspberrypi:~ $ sudo apt-get -y update
+pi@raspberrypi:~ $ sudo apt-get -y upgrade
+pi@raspberrypi:~ $ sudo apt-get -y install python-dev
+pi@raspberrypi:~ $ sudo apt-get -y install python-rpi.gpio
 ```
 
 ### LED
@@ -175,10 +175,10 @@ root.mainloop()
 ### DHT22
 
 ## Instalación
-```bash
-$ sudo apt-get -y update
-$ sudo apt-get -y install python-pip
-$ sudo pip install adafruit_python_dht
+```console
+pi@raspberrypi:~ $ sudo apt-get -y update
+pi@raspberrypi:~ $ sudo apt-get -y install python-pip
+pi@raspberrypi:~ $ sudo pip install adafruit_python_dht
 ```
 
 ```python
@@ -199,17 +199,16 @@ while True:
 ## C
 
 ```console
-
-sudo apt-get install -y wiringpi
-
+pi@raspberrypi:~ $ sudo apt-get install -y wiringpi
 ```
 
 ### Resumen
 
-	sudo apt-get -y update
-	sudo apt-get -y upgrade
-	sudo apt-get install -y python-dev
-	sudo apt-get install -y python-rpi.gpio
-	sudo apt-get install -y python-pip
-	sudo pip install adafruit_python_dht
-
+```console
+pi@raspberrypi:~ $ sudo apt-get -y update
+pi@raspberrypi:~ $ sudo apt-get -y upgrade
+pi@raspberrypi:~ $ sudo apt-get install -y python-dev
+pi@raspberrypi:~ $ sudo apt-get install -y python-rpi.gpio
+pi@raspberrypi:~ $ sudo apt-get install -y python-pip
+pi@raspberrypi:~ $ sudo pip install adafruit_python_dht
+```
