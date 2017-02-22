@@ -3,19 +3,20 @@ Manejo de los GPIO's
 
 ![](img/imagen.png)
 
-## Instalación
+
+## Datasheet
+
+<img src ="img/rpio-gpio.png" width="300" align="center" />
+
+## Python
+
+### Instalación
 ```bash
 $ sudo apt-get -y update
 $ sudo apt-get -y upgrade
 $ sudo apt-get -y install python-dev
 $ sudo apt-get -y install python-rpi.gpio
 ```
-
-## Datasheet
-
-<img src ="img/rpio-gpio.png" width="300" align="center" />
-
-## Uso de GPIO con Python
 
 ### LED
 
@@ -59,8 +60,9 @@ while True:
     pwm_led.ChangeDutyCycle(duty)
 ```
 
+### Pulsador
 
-#### Pulsador
+#### ejemplo 1
 
 >Los pulsadores (PUSHBUTTONS), son interruptores que al ser accionados de forma manual cambian de estado y al soltarlo regresan a su estado inicial
 
@@ -83,7 +85,7 @@ while True:
 
 ![](img/pulsador.png "Pulsador")
 
-#### Pulsador II
+#### ejemplo 2
 
 ```python
 #!/usr/bin/python
@@ -105,7 +107,7 @@ while True:
     GPIO.output(led, led_state)
 ```
 
-#### Ultrasonido
+### Ultrasonido
 
 >	Los sensores de ultrasonidos o sensores ultrasónicos son detectores de proximidad que trabajan libres de roces mecánicos y que detectan objetos a distancias que van desde pocos centímetros hasta varios metros. El sensor emite un sonido y mide el tiempo que la señal tarda en regresar. Estos reflejan en un objeto, el sensor recibe el eco producido y lo convierte en señales eléctricas, las cuales son elaboradas en el aparato de valoración
 
@@ -139,7 +141,7 @@ GPIO.cleanup()
 
 ![](img/ultrasonido.png "Ultrasonido")
 
-#### Servomotor
+### Servomotor
 
 >	Un servomotor (también llamado servo) es un dispositivo similar a un motor de corriente continua que tiene la capacidad de ubicarse en cualquier posición dentro de su rango de operación, y mantenerse estable en dicha posición.
 
@@ -170,7 +172,7 @@ root.geometry("200x50+0+0")
 root.mainloop()
 ```
 
-#### DHT22
+### DHT22
 
 ## Instalación
 ```bash
@@ -191,6 +193,14 @@ while True:
     		print('Failed to get reading. Try again!')
 
 	time.sleep(1)
+
+```
+
+## C
+
+```console
+
+sudo apt-get install -y wiringpi
 
 ```
 
