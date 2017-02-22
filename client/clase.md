@@ -214,7 +214,7 @@ from datetime import datetime, timedelta
 from Car import Car
 import requests
 import RPi.GPIO as GPIO
-
+import socket
 
 class Data:
     def __init__(self, url, timeout=1):
