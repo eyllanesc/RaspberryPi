@@ -277,3 +277,10 @@ if __name__ == '__main__':
 	       GPIO.cleanup()
 	    break
 ```
+
+```console
+pi@raspberrypi:~ $ sudo crontab -e
+```
+
+	0 * * * * (date; ls /home/pi/Monitor/*.jpg | head -n -20 | xargs rm -v) >> /tmp/ima$
+	@reboot python /home/pi/Car/main.py &
