@@ -141,7 +141,7 @@ import time
 
 
 class Car:
-    def __init__(self, motorL, motorR):
+    def __init__(self, motorL, motorR, t=0.2):
         """
         Manejar los motores
         :param pins:
@@ -150,6 +150,7 @@ class Car:
         GPIO.setmode(GPIO.BCM)
         self._pinsA = motorL
         self._pinsB = motorR
+	self.t = t 
 
         for pin in (self._pinsA + self._pinsB):
             GPIO.setup(pin, GPIO.OUT)
@@ -170,28 +171,28 @@ class Car:
         self.stop()
         self.motorOn(self._pinsA)
         self.motorOn(self._pinsB)
-        time.sleep(0.2)
+        time.sleep(self.t)
         self.stop()
 
     def backward(self):
         self.stop()
         self.motorReverse(self._pinsA)
         self.motorReverse(self._pinsB)
-        time.sleep(0.2)
+        time.sleep(self.t)
         self.stop()
 
     def left(self):
         self.stop()
         self.motorOn(self._pinsB)
         self.motorReverse(self._pinsA)
-        time.sleep(0.2)
+        time.sleep(self.t)
         self.stop()
 
     def right(self):
         self.stop()
         self.motorOn(self._pinsA)
         self.motorReverse(self._pinsB)
-        time.sleep(0.2)
+        time.sleep(self.t)
         self.stop()
 
     def stop(self):
@@ -208,9 +209,11 @@ Ahora creamos la clase **Data** que se encarga de obtener los datos, filtrar el 
 ##### main.py
 
 ```python
+#!/usr/bin/env python
 from datetime import datetime, timedelta
 from Car import Car
 import requests
+import RPi.GPIO as GPIO
 
 
 class Data:
@@ -221,34 +224,61 @@ class Data:
 
     def load(self):
         response = requests.get(self.url)
+	s = response.headers['date']
+	u = datetime.strptime(s, "%a, %d %b %Y %H:%M:%S %Z")
         assert response.status_code == 200
-        data = response.json()[-1]
+        data = response.json()[0]
         date = datetime.strptime(data['date_created'][:-1], "%Y-%m-%dT%H:%M:%S.%f")
         if self.before == date:
             return
         self.before = date
-        u = datetime.utcnow()
+        # u = datetime.utcnow()
         diff = u - date
-        if diff < timedelta(seconds=self.timeout):
+        if diff < timedelta(seconds=1.5):
             return data['status']
+	else:
+	    return
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+	# doesn't even have to be reachable
+	s.connect(('10.255.255.255', 0))
+	IP = s.getsockname()[0]
+    except:
+	IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
 
 if __name__ == '__main__':
-    data = Data(url='http://192.168.2.10/api/motors/')
+    host = get_ip()
+    print(host)
+    data = Data(url='http://'+host+'/api/motors/')
     motorL = [17, 27]
     motorR = [23, 24]
-
-    car = Car(motorL, motorR)
+    car = Car(motorL, motorR, 1)
 
     while True:
-        resp = data.load()
-        if resp == 'F':
-            car.forward()
-        elif resp == 'B':
-            car.backward()
-        elif resp == 'L':
-            car.left()
-        elif resp == 'R':
-            car.right()
-        elif resp == 'S':
-            car.stop()
+        try:
+            resp = data.load()
+            if resp == 'F':
+	    	print('Avanzar')
+            	car.forward()
+            elif resp == 'B':
+	    	print('Retroceder')
+            	car.backward()
+            elif resp == 'L':
+	    	print('Izquierda')
+            	car.left()
+            elif resp == 'R':
+	    	print('Derecha')
+            	car.right()
+            elif resp == 'S':
+	    	print('Parar')
+            	car.stop()
+	except (KeyboardInterrupt, SystemExit):
+	    GPIO.cleanup()
+	    break
 ```
