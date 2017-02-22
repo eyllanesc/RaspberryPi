@@ -150,7 +150,7 @@ class Car:
         GPIO.setmode(GPIO.BCM)
         self._pinsA = motorL
         self._pinsB = motorR
-	self.t = t 
+        self.t = t 
 
         for pin in (self._pinsA + self._pinsB):
             GPIO.setup(pin, GPIO.OUT)
@@ -224,8 +224,8 @@ class Data:
 
     def load(self):
         response = requests.get(self.url)
-	s = response.headers['date']
-	u = datetime.strptime(s, "%a, %d %b %Y %H:%M:%S %Z")
+        s = response.headers['date']
+        u = datetime.strptime(s, "%a, %d %b %Y %H:%M:%S %Z")
         assert response.status_code == 200
         data = response.json()[0]
         date = datetime.strptime(data['date_created'][:-1], "%Y-%m-%dT%H:%M:%S.%f")
@@ -236,18 +236,17 @@ class Data:
         diff = u - date
         if diff < timedelta(seconds=1.5):
             return data['status']
-	else:
-	    return
+
 
 #http://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-	# doesn't even have to be reachable
-	s.connect(('10.255.255.255', 0))
-	IP = s.getsockname()[0]
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 0))
+        IP = s.getsockname()[0]
     except:
-	IP = '127.0.0.1'
+        IP = '127.0.0.1'
     finally:
         s.close()
     return IP
@@ -265,21 +264,16 @@ if __name__ == '__main__':
         try:
             resp = data.load()
             if resp == 'F':
-	    	print('Avanzar')
-            	car.forward()
+                car.forward()
             elif resp == 'B':
-	    	print('Retroceder')
-            	car.backward()
+                car.backward()
             elif resp == 'L':
-	    	print('Izquierda')
-            	car.left()
+                car.left()
             elif resp == 'R':
-	    	print('Derecha')
-            	car.right()
+                car.right()
             elif resp == 'S':
-	    	print('Parar')
-            	car.stop()
-	except (KeyboardInterrupt, SystemExit):
-	    GPIO.cleanup()
+                car.stop()
+        except (KeyboardInterrupt, SystemExit):
+	       GPIO.cleanup()
 	    break
 ```
