@@ -192,7 +192,7 @@ class SensorViewSet(viewsets.ModelViewSet):
 
 
 class MotorViewSet(viewsets.ModelViewSet):
-    queryset = Motor.objects.all()
+    queryset = Motor.objects.all().order_by('-id')[:40]
     serializer_class = MotorSerializer
 
 
@@ -563,7 +563,7 @@ function stop() {
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ ./manage.py runserver 0.0.0.0:8000
 ```
 
-![](imagenes/screencapture2.png) 
+![](img/screencapture2.png) 
 
 ```console
 (rpi-env) pi@raspberrypi:~/projects/Raspberry $ cd
