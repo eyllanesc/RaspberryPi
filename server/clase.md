@@ -765,6 +765,64 @@ pi@raspberrypi:~ $ sudo service myservice start
 ```
 Salida:
 ![](img/screencapture3.png) 
+	
+### Configuración de motion
+
+Creamos un directorio para guardar las imagenes:
+
+```console
+pi@raspberrypi:~ $ mkdir  /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chgrp motion /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chmod g+rwx /home/pi/Monitor
+pi@raspberrypi:~ $ sudo chmod -R g+w /home/pi/Monitor/
+```
+Instalamos la librería **motion**.
+
+```console
+pi@raspberrypi:~ $ sudo apt-get install -y motion
+```
+Editamos el archivo motion.conf, buscando los siguientes campos y los cambiamos a lo siguientes valores:
+
+```console
+pi@raspberrypi:~ $ sudo nano /etc/motion/motion.conf
+```
+
+	stream_localhost off
+	webcontrol_localhost off
+	framerate 60
+	target_dir /home/pi/Monitor
+
+	
+Editamos el archivo **/etc/default/motion** y cambiamos de **no** a **yes**
+
+```console
+pi@raspberrypi:~ $ sudo nano /etc/default/motion
+```
+	start_motion_daemon=yes
+
+Despues ejecutamos lo siguiente:
+
+```console
+pi@raspberrypi:~ $ sudo service motion stop
+pi@raspberrypi:~ $ sudo service motion start
+```
+	
+Y Accedemos a la imagen de la cámara a traves de la url desde nuestro buscador: http://{your-rpi-address}:8081/ 
+
+Obteniendo lo siguiente:
+
+![](img/Screenshot.png) 
+
+
+Las imagenes y videos pueden llenar el almacenamiento, por ello configuramos que pasada los 15 minutos despues de cada hora borre todos excepto las 20 ultimas imagenes:
+
+```console
+pi@raspberrypi:~ $ sudo crontab -e
+```
+
+
+	15 * * * * (date; ls /home/pi/Monitor/*.jpg | head -n -20 | xargs rm -v) >> /tmp/images_deleted 2>&1
+
 
 ## Resumen
 
@@ -784,7 +842,8 @@ Para los alumnos del curso es necesario ejecutar los siguientes comandos:
 	pip install django
 	pip install djangorestframework
 	sudo apt-get install -y apache2 libapache2-mod-wsgi
-	
+	sudo apt-get install -y motion
+
 	
 ####Fuente
 
