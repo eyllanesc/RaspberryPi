@@ -13,7 +13,7 @@ En la siguiente imagen se muestra un esquema simple de la aplicación, esta se c
 
 Esta arquitectura tiene como cualidad de ser simple y escalable.
 
-![](imagenes/imagen1.png) 
+![](img/imagen1.png) 
 
 
 ### Aplicación WEB:
@@ -113,7 +113,7 @@ Y luego lanzamos el servidor de desarrollo:
 	
 Ingresamos desde nuestra pc a un buscador y colocamos la ip del raspberry seguido del puerto 8000, en mi caso http://192.168.2.9:8000/ y deberiamos obtener algo similar a lo que muestra la siguiente imagen:
 
-![](imagenes/screencapture.png) 
+![](img/screencapture.png) 
 
 
 Para apagar el servidor apretamos Ctrl+C
@@ -764,138 +764,7 @@ pi@raspberrypi:~ $ sudo cp -rf myservice/ /usr/local/bin/
 pi@raspberrypi:~ $ sudo service myservice start
 ```
 Salida:
-![](imagenes/screencapture3.png) 
-
-##Clientes
-
-### Python
-
-#### GET method:
-
-```python
-import requests
-import datetime
-
-url = 'http://192.168.2.9/api/sensors/'
-
-response = requests.get(url)
-assert response.status_code == 200
-
-for data in response.json():
-    date = datetime.datetime.strptime(data['date_created'][:-1], "%Y-%m-%dT%H:%M:%S.%f")
-    humidity = data['humidity']
-    temperature = data['temperature']
-    print("Fecha: {}, Humedad: {}, Temperatura: {}".format(date, humidity, temperature))
-    
-```
-
-#### POST method:
-
-```python
-import requests
-import datetime
-import json
-import time
-
-url = 'http://192.168.2.9/api/sensors/'
-
- for i in range(100):
-	date = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-
-	headers = {'Content-type': 'application/json'}
-	response = requests.post(url,  data =json.dumps({'date_created': date,'temperature': 11.1, 'humidity': 10.1}), headers=headers)
-	assert response.status_code == 201
-	time.sleep(0.1)
-	
-```
-
-### ESP8266
-
-Para realizar esta parte es necesario tener instalado las herramientas necesarias para compilar y quemar el *ESP8266*
-
-#### esp8266-restclient [link](https://github.com/csquared/arduino-restclient) 
-
-```console
-cd ~/Documents/Arduino
-mkdir libraries
-cd libraries
-git clone https://github.com/dakaz/esp8266-restclient.git RestClient
-```
-
-#### SimpleDHT [link](https://github.com/winlinvip/SimpleDHT)
-
-```console
-cd ~/Documents/Arduino
-mkdir libraries
-cd libraries
-git clone https://github.com/winlinvip/SimpleDHT.git SimpleDHT
-```
-
-Código del cliente:
-
-```cpp
-#include <RestClient.h>
-#include <ESP8266WiFi.h>
-#include <SimpleDHT.h>
-
-
-const char* ssid     = "{your ssid}";
-const char* password = "{your password}";
-
-const char* host = "{your ip or domain}";
-
-RestClient client = RestClient(host);
-
-int pinDHT11 = 2;
-SimpleDHT11 dht11;
-
-void setup() {
-    Serial.begin(115200);
-    delay(10);
-    client.setContentType("application/json");
-    // We start by connecting to a WiFi network
-    
-    Serial.println();
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    
-    /* Explicitly set the ESP8266 to be a WiFi-client, otherwise, it by default,
-     would try to act as both a client and an access-point and could cause
-     network-issues with your other WiFi-devices on your WiFi-network. */
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
-    
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    
-    Serial.println("");
-    Serial.println("WiFi connected");  
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-}
-
-String response;
-char buffer[50];
-void loop(){
-    byte temperature = 0;
-    byte humidity = 0;
-    if (dht11.read(pinDHT11, &temperature, &humidity, NULL)) {
-        Serial.print("Read DHT11 failed.");
-        return;
-    }
-    
-    response = "";
-    sprintf (buffer, "{\"temperature\": %d, \"humidity\": %d}",(int)temperature, (int)humidity);
-    int statusCode = client.post("/api/sensors/", buffer , &response);
-    if(statusCode == 201){;
-        Serial.println(response);
-    }
-    delay(2000);
-}
-```
+![](img/screencapture3.png) 
 
 ## Resumen
 
