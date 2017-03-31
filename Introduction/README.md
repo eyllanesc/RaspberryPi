@@ -11,7 +11,7 @@ Introducción al Raspberry Pi
 
 ![](img/proyectos.jpg)
 
-####Recursos
+#### Recursos
 
 - SoC: Broadcom BCM2835 (CPU + GPU + DSP + SDRAM + puerto USB)
 - CPU: ARM 1176JZF-S a 700 MHz (familia ARM11)
