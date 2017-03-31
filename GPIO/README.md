@@ -24,7 +24,7 @@ pi@raspberrypi:~ $ sudo apt-get -y install python-rpi.gpio
 
 ![](img/led2.png)
 
-####Blink
+#### Blink
 ```python
 #!/usr/bin/python
 import RPi.GPIO as GPIO
@@ -43,7 +43,7 @@ while True:
 
 ![](img/led.png "Led")
 
-####PWM
+#### PWM
 ```python
 #!/usr/bin/python
 import RPi.GPIO as GPIO
