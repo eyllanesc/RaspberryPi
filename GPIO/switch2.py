@@ -14,7 +14,7 @@ isRunning = True
 while isRunning:
     try:
         new_input_state = GPIO.input(switch)
-        if new_input_state == False and old_input_state == True:
+        if not new_input_state and old_input_state:
             led_state = not led_state
         old_input_state = new_input_state
         GPIO.output(led, led_state)
