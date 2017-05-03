@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto</title>
+</head>
+
+<body>
+<div id="header">
+    <h2 style="text-align: center">Proyecto</h2>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="forward()">Avanzar</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="backward()">Retroceder</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="left()">Izquierda</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="right()">Derecha</button>
+</div>
+
+<div style="text-align:center;margin:auto;">
+    <button onclick="stop()">Parar</button>
+</div>
+
+<p style="text-align:center;">
+    <img id="ip_link" src="" target="_blank" />
+</p>
+
+
+<div id="content">
+    <div class="demo-container">
+        <div id="placeholder" style="margin:0 auto;"></div>
+        <br>
+        <div style="width:1000px;margin:0 auto;">
+            Actualizar: <input type="checkbox" id="myCheck" checked>
+            <br>
+            Time : <input type="number" id="interval" value="1000">
+            <br>
+            <label id="lblLast"></label>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="{% static 'vendor/jquery.min.js' %}"></script>
+<script type="text/javascript" src=" {% static 'vendor/plotly-latest.min.js' %}"></script>
+<script type="text/javascript" src=" {% static 'js/sensors.js' %}"> </script>
+<script type="text/javascript" src=" {% static 'js/motors.js' %}"> </script>
+</html>
