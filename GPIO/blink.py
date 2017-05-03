@@ -6,11 +6,13 @@ delay = 1 #one second
 GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
 GPIO.setup(led, GPIO.OUT) # input or output
-while True:
+isRunning = True
+while isRunning:
 	try:
 		GPIO.output(led, True)
 		time.sleep(delay)
 		GPIO.output(led, False)
 		time.sleep(delay)
 	except KeyboardInterrupt:
-		GPIO.cleanup()
+		isRunning = False
+GPIO.cleanup()

@@ -10,7 +10,8 @@ print "Distance Measurement In Progress"
 GPIO.setup(TRIG,GPIO.OUT)
 GPIO.setup(ECHO,GPIO.IN)
 
-while True:
+isRunning = True
+while isRunning:
 	try:
 		GPIO.output(TRIG, False)
 		print "Waiting For Sensor To Settle"
@@ -27,4 +28,5 @@ while True:
 		distance = round(distance, 2)
 		print "Distance:",distance,"cm"
 	except KeyboardInterrupt:
-		GPIO.cleanup()
+		isRunning = False
+GPIO.cleanup()

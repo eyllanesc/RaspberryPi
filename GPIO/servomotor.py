@@ -17,6 +17,9 @@ class App:
 		duty = float(angle) / 10.0 + 2.5
 		pwm.ChangeDutyCycle(duty)
 
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		GPIO.cleanup()
+
 root = Tk()
 root.wm_title('Servo Control')
 app = App(root)
