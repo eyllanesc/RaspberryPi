@@ -7,7 +7,10 @@ GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
 GPIO.setup(led, GPIO.OUT) # input or output
 while True:
-	GPIO.output(led, True)
-	time.sleep(delay)
-	GPIO.output(led, False)
-	time.sleep(delay)
+	try:
+		GPIO.output(led, True)
+		time.sleep(delay)
+		GPIO.output(led, False)
+		time.sleep(delay)
+	except KeyboardInterrupt:
+		GPIO.cleanup()

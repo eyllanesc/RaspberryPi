@@ -7,7 +7,10 @@ GPIO.setwarnings(False) #disable warnings
 GPIO.setmode(GPIO.BCM) # mode BCM or Board
 GPIO.setup(switch, GPIO.IN, pull_up_down=GPIO.PUD_UP) # input or output
 while True:
-	input_state = GPIO.input(switch)
-	if input_state == False:
-		print("Button Pressed")
-	time.sleep(delay)
+	try:
+		input_state = GPIO.input(switch)
+		if input_state == False:
+			print("Button Pressed")
+		time.sleep(delay)
+	except KeyboardInterrupt:
+		GPIO.cleanup()
