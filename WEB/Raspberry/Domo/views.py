@@ -6,7 +6,7 @@ from Domo.serializers import SensorSerializer, MotorSerializer
 
 
 class SensorViewSet(viewsets.ModelViewSet):
-    queryset = Sensor.objects.all().order_by('-id')[:40]
+    queryset = Sensor.objects.all().order_by('-id')
     serializer_class = SensorSerializer
 
 
