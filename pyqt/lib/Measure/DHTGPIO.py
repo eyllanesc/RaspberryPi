@@ -23,7 +23,7 @@ class ThermometerThread(QThread):
             self.sleep(1)
         self.finished.emit()
 
-    def stopWork(self):
+    def stop(self):
         self.mRunning = False
 
 
@@ -46,9 +46,12 @@ class DHTGPIO(QWidget):
         self.h.setValue(humidity)
         self.t.setValue(temperature)
 
-    def __del__(self):
+    def closeEvent(self, event):
+        self.thread.stop()
         self.thread.quit()
         self.thread.wait()
+        self.thread.deleteLater()
+        QWidget.closeEvent(self, event)
 
 
 if __name__ == '__main__':

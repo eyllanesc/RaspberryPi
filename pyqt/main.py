@@ -30,7 +30,7 @@ class Widget(QWidget):
 
     def addCustomAction(self):
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        quitAction = QAction("Salir", self, icon=QIcon(":close"), shortcut="Ctrl+Q", triggered=qApp.quit)
+        quitAction = QAction("Salir", self, icon=QIcon(":close"), shortcut="Ctrl+Q", triggered=self.close)
         self.addAction(quitAction)
         aboutAction = QAction("Acerca de Qt", self, icon=QIcon(":qt"), shortcut="Ctrl+A", triggered=self.about)
         self.addAction(aboutAction)
