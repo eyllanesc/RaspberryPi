@@ -53,13 +53,14 @@ $(document).ready(function () {
             type: "GET", // http method
             // handle a successful response
             success: function (data) {
+            	results = data['results'];
                 temperature['x'] = [];
                 temperature['y'] = [];
 
                 humidity['x'] = [];
                 humidity['y'] = [];
 
-                $.each(data, function (index, value) {
+                $.each(results, function (index, value) {
                     temperature['x'].push(new Date(value['date_created']));
                     temperature['y'].push(value['temperature']);
 
